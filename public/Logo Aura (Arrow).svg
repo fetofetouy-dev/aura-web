@@ -1,0 +1,21 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">\
+  <defs>\
+    <linearGradient id="auraGradient" x1="0%" y1="0%" x2="100%" y2="0%">\
+      <stop offset="0%" stop-color="#3B82F6" />\
+      <stop offset="100%" stop-color="#8B5CF6" />\
+    </linearGradient>\
+  </defs>\
+\
+  <path d="M12 52 L36 8 L60 52" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>\
+  \
+  <path d="M18 35 H54 L46 27 M54 35 L46 43" stroke="url(#auraGradient)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>\
+\
+  <text x="66" y="52" font-family="sans-serif" font-weight="bold" font-size="52" fill="#FFFFFF" letter-spacing="-1">URA</text>\
+</svg>}
