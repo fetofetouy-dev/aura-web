@@ -101,11 +101,8 @@ export function LocaleProvider({ children }: LocaleProviderProps) {
 
   const translations = getTranslations(locale)
 
-  // Prevent flash of untranslated content
-  if (!mounted) {
-    return null
-  }
-
+  // Always render children to avoid hydration mismatch
+  // The locale will be updated on mount via useEffect
   return (
     <LocaleContext.Provider value={{ locale, setLocale, t, translations }}>
       {children}
