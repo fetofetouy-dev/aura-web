@@ -1,6 +1,6 @@
 "use client"
 
-import { Zap, Target, Handshake } from "lucide-react"
+import { Zap, Target, Rocket } from "lucide-react"
 import { Container } from "@/components/ui/Container"
 import { Section } from "@/components/ui/Section"
 import { Card } from "@/components/ui/Card"
@@ -9,7 +9,7 @@ import { useLocale } from "@/lib/i18n/LocaleProvider"
 const iconMap = {
   "zap": Zap,
   "target": Target,
-  "handshake": Handshake,
+  "rocket": Rocket,
 }
 
 export function PorQueAura() {
