@@ -1,19 +1,18 @@
 "use client"
 
 import Script from "next/script"
-import { usePathname, useSearchParams } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { useEffect } from "react"
 import { pageview, GA_TRACKING_ID } from "@/lib/gtag"
 
 export function GoogleAnalytics() {
   const pathname = usePathname()
-  const searchParams = useSearchParams()
 
   useEffect(() => {
     if (pathname) {
-      pageview(pathname + (searchParams?.toString() || ''))
+      pageview(pathname)
     }
-  }, [pathname, searchParams])
+  }, [pathname])
 
   if (!GA_TRACKING_ID || GA_TRACKING_ID === '') {
     return null
