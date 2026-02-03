@@ -1,18 +1,24 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Check } from "lucide-react"
+import { Check, Database, Mail, CheckSquare, MessageSquare } from "lucide-react"
 import { Card } from "@/components/ui/Card"
-import { AutomationStep } from "@/lib/demo-data"
+
+const iconMap: Record<string, any> = {
+  "database": Database,
+  "mail": Mail,
+  "check-square": CheckSquare,
+  "message-square": MessageSquare,
+}
 
 interface StepCardProps {
-  step: AutomationStep
+  step: any
   status: "pending" | "executing" | "complete"
   delay?: number
 }
 
 export function StepCard({ step, status, delay = 0 }: StepCardProps) {
-  const Icon = step.icon
+  const Icon = iconMap[step.icon] || Database
 
   return (
     <motion.div

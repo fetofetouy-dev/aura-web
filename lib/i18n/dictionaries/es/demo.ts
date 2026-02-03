@@ -1,5 +1,3 @@
-import { Database, Mail, CheckSquare, MessageSquare } from "lucide-react"
-
 export const demo = {
   lead: {
     name: "María Rodríguez",
@@ -14,7 +12,7 @@ export const demo = {
     {
       id: "crm",
       title: "CRM - Pipedrive",
-      icon: Database,
+      icon: "database",
       details: [
         "Contacto creado",
         "Deal abierto: 'María - Automatización'",
@@ -26,7 +24,7 @@ export const demo = {
     {
       id: "email",
       title: "Email - Gmail",
-      icon: Mail,
+      icon: "mail",
       details: [
         "Email de bienvenida enviado",
         "Contenido personalizado generado con IA",
@@ -38,7 +36,7 @@ export const demo = {
     {
       id: "task",
       title: "Tarea - CRM",
-      icon: CheckSquare,
+      icon: "check-square",
       details: [
         "Tarea creada para vendedor",
         "Tipo: Seguimiento de lead",
@@ -50,7 +48,7 @@ export const demo = {
     {
       id: "slack",
       title: "Notificación - Slack",
-      icon: MessageSquare,
+      icon: "message-square",
       details: [
         "Canal: #ventas notificado",
         "Mensaje enviado con contexto completo",
