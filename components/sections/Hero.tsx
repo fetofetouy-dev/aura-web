@@ -25,7 +25,7 @@ export function Hero() {
           <FadeIn delay={0.1}>
             <div className="mb-8 flex justify-center">
               <Image
-                src="/logo-aura.svg"
+                src="/aura-logo.png"
                 alt="Aura Logo"
                 width={200}
                 height={60}
