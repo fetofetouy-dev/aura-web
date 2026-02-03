@@ -1,9 +1,12 @@
+"use client"
+
 import Image from "next/image"
 import { Container } from "@/components/ui/Container"
-import { SITE_CONTENT } from "@/lib/constants"
+import { useLocale } from "@/lib/i18n/LocaleProvider"
 
 export function Footer() {
-  const { footer } = SITE_CONTENT
+  const { t } = useLocale()
+  const footer = t('siteContent.footer')
 
   return (
     <footer className="bg-background-elevated border-t border-border py-12">
@@ -12,20 +15,20 @@ export function Footer() {
           {/* Logo & Description */}
           <div>
             <Image
-              src="/aura-logo.png"
+              src="/aura-logo.svg"
               alt="Aura Logo"
-              width={150}
-              height={45}
+              width={200}
+              height={60}
               className="mb-4"
             />
             <p className="text-text-body text-sm">
-              Automatización inteligente para Pymes que quieren crecer.
+              {t('common.footerDescription')}
             </p>
           </div>
 
           {/* Links */}
           <div>
-            <h4 className="font-semibold text-text-primary mb-4">Enlaces</h4>
+            <h4 className="font-semibold text-text-primary mb-4">{t('common.links')}</h4>
             <ul className="space-y-2">
               {footer.links.main.map((link) => (
                 <li key={link.label}>
@@ -42,7 +45,7 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="font-semibold text-text-primary mb-4">Contacto</h4>
+            <h4 className="font-semibold text-text-primary mb-4">{t('common.contact')}</h4>
             <p className="text-text-body text-sm mb-4">
               <a
                 href={`mailto:${footer.contact.email}`}

@@ -2,8 +2,11 @@
 
 import { motion } from "framer-motion"
 import { Card } from "@/components/ui/Card"
+import { useLocale } from "@/lib/i18n/LocaleProvider"
 
 export function AnalyzingStage() {
+  const { t } = useLocale()
+
   return (
     <Card className="p-8">
       <div className="flex flex-col items-center justify-center space-y-6">
@@ -36,10 +39,10 @@ export function AnalyzingStage() {
         {/* Text */}
         <div className="text-center">
           <h3 className="text-2xl font-bold text-text-primary mb-2">
-            Claude AI Analizando...
+            {t('common.demo.analyzingTitle')}
           </h3>
           <p className="text-text-body">
-            Procesando información del lead y preparando automatización
+            {t('common.demo.analyzingMessage')}
           </p>
         </div>
 

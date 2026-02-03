@@ -2,14 +2,16 @@
 
 import { useState } from "react"
 import { Card } from "@/components/ui/Card"
-import { DEMO_CODE } from "@/lib/demo-data"
+import { useLocale } from "@/lib/i18n/LocaleProvider"
 import { Check, Copy } from "lucide-react"
 
 export function CodeViewer() {
+  const { t } = useLocale()
+  const demoCode = t('demo.code')
   const [copied, setCopied] = useState(false)
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(DEMO_CODE)
+    navigator.clipboard.writeText(demoCode)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -33,12 +35,12 @@ export function CodeViewer() {
           {copied ? (
             <>
               <Check className="w-4 h-4" />
-              Copiado
+              {t('common.buttons.copied')}
             </>
           ) : (
             <>
               <Copy className="w-4 h-4" />
-              Copiar
+              {t('common.buttons.copy')}
             </>
           )}
         </button>
@@ -48,7 +50,7 @@ export function CodeViewer() {
       <div className="p-4 overflow-x-auto">
         <pre className="text-sm leading-relaxed">
           <code className="text-text-body font-mono">
-            {DEMO_CODE.split("\n").map((line, index) => (
+            {demoCode.split("\n").map((line: string, index: number) => (
               <div key={index} className="flex">
                 <span className="inline-block w-8 text-right text-text-muted mr-4 select-none">
                   {index + 1}

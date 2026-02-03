@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/Button"
 import { GradientText } from "@/components/ui/GradientText"
 import { FlowLines } from "@/components/animations/FlowLines"
 import { FadeIn } from "@/components/animations/FadeIn"
-import { SITE_CONTENT } from "@/lib/constants"
+import { useLocale } from "@/lib/i18n/LocaleProvider"
 
 export function Hero() {
-  const { hero } = SITE_CONTENT
+  const { t } = useLocale()
+  const hero = t('siteContent.hero')
 
   const scrollToDemo = () => {
     document.getElementById("demo")?.scrollIntoView({ behavior: "smooth" })
@@ -25,10 +26,10 @@ export function Hero() {
           <FadeIn delay={0.1}>
             <div className="mb-8 flex justify-center">
               <Image
-                src="/aura-logo.png"
+                src="/aura-logo.svg"
                 alt="Aura Logo"
-                width={200}
-                height={60}
+                width={300}
+                height={90}
                 priority
               />
             </div>

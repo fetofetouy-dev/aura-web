@@ -4,7 +4,7 @@ import { Search, Cpu, Rocket } from "lucide-react"
 import { Container } from "@/components/ui/Container"
 import { Section } from "@/components/ui/Section"
 import { FadeIn } from "@/components/animations/FadeIn"
-import { SITE_CONTENT } from "@/lib/constants"
+import { useLocale } from "@/lib/i18n/LocaleProvider"
 
 const iconMap = {
   "search": Search,
@@ -13,7 +13,8 @@ const iconMap = {
 }
 
 export function LaSolucion() {
-  const { solucion } = SITE_CONTENT
+  const { t } = useLocale()
+  const solucion = t('siteContent.solucion')
 
   return (
     <Section id="solucion">

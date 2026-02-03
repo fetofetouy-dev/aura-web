@@ -1,8 +1,10 @@
+"use client"
+
 import { ShoppingCart, Briefcase, HeartPulse, Utensils, Home, Store } from "lucide-react"
 import { Container } from "@/components/ui/Container"
 import { Section } from "@/components/ui/Section"
 import { Card } from "@/components/ui/Card"
-import { SITE_CONTENT } from "@/lib/constants"
+import { useLocale } from "@/lib/i18n/LocaleProvider"
 
 const iconMap = {
   "shopping-cart": ShoppingCart,
@@ -14,7 +16,8 @@ const iconMap = {
 }
 
 export function CasosDeUso() {
-  const { casosDeUso } = SITE_CONTENT
+  const { t } = useLocale()
+  const casosDeUso = t('siteContent.casosDeUso')
 
   return (
     <Section id="casos-de-uso">

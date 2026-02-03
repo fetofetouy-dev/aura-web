@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -38,7 +40,12 @@ export default function RootLayout({
     <html lang="es" className={inter.variable}>
       <body>
         <GoogleAnalytics />
-        {children}
+        <LocaleProvider>
+          <div className="fixed top-4 right-4 z-50">
+            <LanguageSwitcher />
+          </div>
+          {children}
+        </LocaleProvider>
       </body>
     </html>
   );

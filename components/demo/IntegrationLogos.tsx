@@ -1,4 +1,7 @@
+"use client"
+
 import { Database, Mail, MessageSquare, Calendar, FileText, BarChart } from "lucide-react"
+import { useLocale } from "@/lib/i18n/LocaleProvider"
 
 const integrations = [
   { name: "Pipedrive", icon: Database },
@@ -10,10 +13,12 @@ const integrations = [
 ]
 
 export function IntegrationLogos() {
+  const { t } = useLocale()
+
   return (
     <div>
       <h4 className="text-sm font-semibold text-text-muted mb-3 text-center">
-        Integraciones disponibles
+        {t('common.integrations.title')}
       </h4>
       <div className="grid grid-cols-3 gap-4">
         {integrations.map((integration) => {

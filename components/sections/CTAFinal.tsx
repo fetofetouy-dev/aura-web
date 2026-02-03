@@ -4,10 +4,11 @@ import { Container } from "@/components/ui/Container"
 import { Section } from "@/components/ui/Section"
 import { Button } from "@/components/ui/Button"
 import { GradientText } from "@/components/ui/GradientText"
-import { SITE_CONTENT } from "@/lib/constants"
+import { useLocale } from "@/lib/i18n/LocaleProvider"
 
 export function CTAFinal() {
-  const { ctaFinal } = SITE_CONTENT
+  const { t } = useLocale()
+  const ctaFinal = t('siteContent.ctaFinal')
 
   return (
     <Section id="contacto" className="relative overflow-hidden">
@@ -40,29 +41,19 @@ export function CTAFinal() {
                 document.getElementById("demo")?.scrollIntoView({ behavior: "smooth" })
               }}
             >
-              Ver Ejemplo de Automatización
-            </Button>
-            <Button
-              variant="secondary"
-              size="lg"
-              onClick={() => {
-                // Download case study
-                window.open("/caso-estudio-aura.md", "_blank")
-              }}
-            >
-              {ctaFinal.secondaryCTA}
+              {ctaFinal.primaryCTA}
             </Button>
           </div>
 
           {/* Contact Info */}
           <div className="mt-12 pt-8 border-t border-border">
             <p className="text-text-muted">
-              ¿Prefieres hablar directamente?{" "}
+              {t('common.preferDirectContact')}{" "}
               <a
-                href={`mailto:${SITE_CONTENT.footer.contact.email}`}
+                href={`mailto:${t('siteContent.footer.contact.email')}`}
                 className="text-accent-blue hover:underline"
               >
-                {SITE_CONTENT.footer.contact.email}
+                {t('siteContent.footer.contact.email')}
               </a>
             </p>
           </div>

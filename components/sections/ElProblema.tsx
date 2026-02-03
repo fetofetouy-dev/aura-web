@@ -1,8 +1,10 @@
+"use client"
+
 import { ClipboardList, Clock, FileText } from "lucide-react"
 import { Container } from "@/components/ui/Container"
 import { Section } from "@/components/ui/Section"
 import { Card } from "@/components/ui/Card"
-import { SITE_CONTENT } from "@/lib/constants"
+import { useLocale } from "@/lib/i18n/LocaleProvider"
 
 const iconMap = {
   "clipboard-list": ClipboardList,
@@ -11,7 +13,8 @@ const iconMap = {
 }
 
 export function ElProblema() {
-  const { problema } = SITE_CONTENT
+  const { t } = useLocale()
+  const problema = t('siteContent.problema')
 
   return (
     <Section id="problema">

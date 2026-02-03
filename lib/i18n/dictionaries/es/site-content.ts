@@ -1,4 +1,4 @@
-export const SITE_CONTENT = {
+export const siteContent = {
   hero: {
     title: "Automatización inteligente para Pymes que quieren crecer",
     subtitle: "Liberamos tiempo y recursos con agentes de IA que trabajan 24/7 para tu negocio",
@@ -12,7 +12,8 @@ export const SITE_CONTENT = {
       {
         id: "leads",
         title: "Gestión Manual de Leads",
-        description: "Cada lead nuevo requiere 10 pasos manuales: agregar al CRM, enviar email, programar seguimiento...",
+        description:
+          "Cada lead nuevo requiere 10 pasos manuales: agregar al CRM, enviar email, programar seguimiento...",
         icon: "clipboard-list" as const,
       },
       {
@@ -134,7 +135,8 @@ export const SITE_CONTENT = {
       {
         id: "claude",
         title: "Powered by Claude AI",
-        description: "La IA más avanzada del mercado (Anthropic). Razonamiento complejo, no solo templates.",
+        description:
+          "La IA más avanzada del mercado (Anthropic). Razonamiento complejo, no solo templates.",
         icon: "zap" as const,
       },
       {
@@ -146,7 +148,8 @@ export const SITE_CONTENT = {
       {
         id: "beta",
         title: "En Beta - Mejoramos Constantemente",
-        description: "Estamos en constante evolución, perfeccionando nuestros procesos y agregando nuevas funcionalidades basadas en feedback real.",
+        description:
+          "Estamos en constante evolución, perfeccionando nuestros procesos y agregando nuevas funcionalidades basadas en feedback real.",
         icon: "rocket" as const,
       },
     ],

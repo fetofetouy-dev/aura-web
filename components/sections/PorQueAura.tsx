@@ -1,8 +1,10 @@
+"use client"
+
 import { Zap, Target, Handshake } from "lucide-react"
 import { Container } from "@/components/ui/Container"
 import { Section } from "@/components/ui/Section"
 import { Card } from "@/components/ui/Card"
-import { SITE_CONTENT } from "@/lib/constants"
+import { useLocale } from "@/lib/i18n/LocaleProvider"
 
 const iconMap = {
   "zap": Zap,
@@ -11,7 +13,8 @@ const iconMap = {
 }
 
 export function PorQueAura() {
-  const { porQueAura } = SITE_CONTENT
+  const { t } = useLocale()
+  const porQueAura = t('siteContent.porQueAura')
 
   return (
     <Section id="por-que-aura" background="elevated">

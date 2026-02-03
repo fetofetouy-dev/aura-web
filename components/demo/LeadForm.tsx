@@ -3,14 +3,16 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/Button"
 import { Card } from "@/components/ui/Card"
-import { DEMO_LEAD } from "@/lib/demo-data"
+import { useLocale } from "@/lib/i18n/LocaleProvider"
 
 interface LeadFormProps {
   onSubmit: () => void
 }
 
 export function LeadForm({ onSubmit }: LeadFormProps) {
-  const [formData, setFormData] = useState(DEMO_LEAD)
+  const { t } = useLocale()
+  const demoLead = t('demo.lead')
+  const [formData, setFormData] = useState(demoLead)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -21,17 +23,17 @@ export function LeadForm({ onSubmit }: LeadFormProps) {
     <Card className="p-6">
       <div className="mb-4">
         <h3 className="text-xl font-bold text-text-primary mb-2">
-          🎯 Simulador: Nuevo Lead Detectado
+          {t('common.demo.title')}
         </h3>
         <p className="text-sm text-text-muted">
-          Completa los datos y activa la automatización
+          {t('common.demo.subtitle')}
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-text-body mb-1">
-            Nombre
+            {t('common.labels.name')}
           </label>
           <input
             type="text"
@@ -44,7 +46,7 @@ export function LeadForm({ onSubmit }: LeadFormProps) {
 
         <div>
           <label className="block text-sm font-medium text-text-body mb-1">
-            Email
+            {t('common.labels.email')}
           </label>
           <input
             type="email"
@@ -57,7 +59,7 @@ export function LeadForm({ onSubmit }: LeadFormProps) {
 
         <div>
           <label className="block text-sm font-medium text-text-body mb-1">
-            Empresa
+            {t('common.labels.company')}
           </label>
           <input
             type="text"
@@ -70,38 +72,36 @@ export function LeadForm({ onSubmit }: LeadFormProps) {
 
         <div>
           <label className="block text-sm font-medium text-text-body mb-1">
-            Interés
+            {t('common.labels.interest')}
           </label>
           <select
             value={formData.interest}
             onChange={(e) => setFormData({ ...formData, interest: e.target.value })}
             className="w-full px-4 py-2 bg-background border border-border rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-blue"
           >
-            <option>Automatización de marketing</option>
-            <option>Gestión de leads</option>
-            <option>Atención al cliente</option>
-            <option>Generación de contenido</option>
+            {t('common.interests').map((interest: string, idx: number) => (
+              <option key={idx}>{interest}</option>
+            ))}
           </select>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-text-body mb-1">
-            Origen
+            {t('common.labels.source')}
           </label>
           <select
             value={formData.source}
             onChange={(e) => setFormData({ ...formData, source: e.target.value })}
             className="w-full px-4 py-2 bg-background border border-border rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-blue"
           >
-            <option>LinkedIn</option>
-            <option>Google</option>
-            <option>Referido</option>
-            <option>Email</option>
+            {t('common.sources').map((source: string, idx: number) => (
+              <option key={idx}>{source}</option>
+            ))}
           </select>
         </div>
 
         <Button type="submit" variant="primary" className="w-full">
-          ▶ Activar Automatización
+          {t('common.buttons.startAutomation')}
         </Button>
       </form>
     </Card>
