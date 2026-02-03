@@ -2,33 +2,35 @@
 
 import { useEffect, useState } from "react"
 import { StepCard } from "./StepCard"
-import { AUTOMATION_STEPS } from "@/lib/demo-data"
+import { useLocale } from "@/lib/i18n/LocaleProvider"
 
 interface AutomationStepsProps {
   onComplete: () => void
 }
 
 export function AutomationSteps({ onComplete }: AutomationStepsProps) {
+  const { t } = useLocale()
+  const automationSteps = t('demo.automationSteps')
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
 
   useEffect(() => {
-    if (currentStepIndex >= AUTOMATION_STEPS.length) {
+    if (currentStepIndex >= automationSteps.length) {
       // All steps complete
       setTimeout(onComplete, 500)
       return
     }
 
-    const currentStep = AUTOMATION_STEPS[currentStepIndex]
+    const currentStep = automationSteps[currentStepIndex]
     const timer = setTimeout(() => {
       setCurrentStepIndex((prev) => prev + 1)
     }, currentStep.duration)
 
     return () => clearTimeout(timer)
-  }, [currentStepIndex, onComplete])
+  }, [currentStepIndex, onComplete, automationSteps])
 
   return (
     <div className="space-y-4">
-      {AUTOMATION_STEPS.map((step, index) => {
+      {automationSteps.map((step: any, index: number) => {
         let status: "pending" | "executing" | "complete"
 
         if (index < currentStepIndex) {
