@@ -1,3 +1,4 @@
+import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { Hero } from "@/components/sections/Hero"
 import { ElProblema } from "@/components/sections/ElProblema"
 import { LaSolucion } from "@/components/sections/LaSolucion"
@@ -10,6 +11,9 @@ import { Footer } from "@/components/sections/Footer"
 export default function Home() {
   return (
     <main className="min-h-screen">
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
       <Hero />
       <ElProblema />
       <LaSolucion />

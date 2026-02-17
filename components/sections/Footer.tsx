@@ -30,7 +30,7 @@ export function Footer() {
           <div>
             <h4 className="font-semibold text-text-primary mb-4">{t('common.links')}</h4>
             <ul className="space-y-2">
-              {footer.links.main.map((link) => (
+              {footer.links.main.map((link: any) => (
                 <li key={link.label}>
                   <a
                     href={link.href}
@@ -55,7 +55,7 @@ export function Footer() {
               </a>
             </p>
             <div className="flex gap-4">
-              {footer.social.map((social) => (
+              {footer.social.map((social: any) => (
                 <a
                   key={social.platform}
                   href={social.href}
@@ -75,7 +75,7 @@ export function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-text-muted text-sm">{footer.copyright}</p>
             <div className="flex gap-6">
-              {footer.links.legal.map((link) => (
+              {footer.links.legal.map((link: any) => (
                 <a
                   key={link.label}
                   href={link.href}

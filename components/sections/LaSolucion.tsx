@@ -38,8 +38,8 @@ export function LaSolucion() {
 
           {/* Steps */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-            {solucion.steps.map((step, index) => {
-              const Icon = iconMap[step.icon]
+            {solucion.steps.map((step: any, index: number) => {
+              const Icon = iconMap[step.icon as keyof typeof iconMap]
               return (
                 <FadeIn key={step.id} delay={0.1 * (index + 1)}>
                   <div className="relative flex flex-col items-center text-center">

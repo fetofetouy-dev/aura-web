@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { Container } from "@/components/ui/Container"
 import { Button } from "@/components/ui/Button"
 import { GradientText } from "@/components/ui/GradientText"
@@ -59,13 +60,11 @@ export function Hero() {
               >
                 {hero.primaryCTA}
               </Button>
-              <Button
-                variant="secondary"
-                size="lg"
-                onClick={() => window.location.href = "#contacto"}
-              >
-                {hero.secondaryCTA}
-              </Button>
+              <Link href="/backoffice/dashboard">
+                <Button variant="secondary" size="lg">
+                  Ver Demo →
+                </Button>
+              </Link>
             </div>
           </FadeIn>
         </div>

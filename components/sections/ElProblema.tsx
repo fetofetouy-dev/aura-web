@@ -28,8 +28,8 @@ export function ElProblema() {
 
         {/* Problem Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {problema.cards.map((card) => {
-            const Icon = iconMap[card.icon]
+          {problema.cards.map((card: any) => {
+            const Icon = iconMap[card.icon as keyof typeof iconMap]
             return (
               <Card key={card.id} className="hover:border-accent-blue/50 transition-all duration-300">
                 <div className="mb-4">

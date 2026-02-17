@@ -31,8 +31,8 @@ export function PorQueAura() {
 
         {/* Pillars */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {porQueAura.pillars.map((pillar) => {
-            const Icon = iconMap[pillar.icon]
+          {porQueAura.pillars.map((pillar: any) => {
+            const Icon = iconMap[pillar.icon as keyof typeof iconMap]
             return (
               <Card key={pillar.id} className="text-center hover:glow-aura transition-all duration-300">
                 <div className="mb-6 flex justify-center">

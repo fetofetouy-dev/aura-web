@@ -61,7 +61,7 @@ export function StepCard({ step, status, delay = 0 }: StepCardProps) {
           <div className="flex-1 min-w-0">
             <h4 className="font-semibold text-text-primary mb-2">{step.title}</h4>
             <ul className="space-y-1">
-              {step.details.map((detail, index) => (
+              {step.details.map((detail: string, index: number) => (
                 <motion.li
                   key={index}
                   initial={{ opacity: 0 }}

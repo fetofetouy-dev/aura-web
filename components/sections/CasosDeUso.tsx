@@ -34,8 +34,8 @@ export function CasosDeUso() {
 
         {/* Use Cases Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {casosDeUso.cards.map((card) => {
-            const Icon = iconMap[card.icon]
+          {casosDeUso.cards.map((card: any) => {
+            const Icon = iconMap[card.icon as keyof typeof iconMap]
             return (
               <Card
                 key={card.id}
@@ -50,7 +50,7 @@ export function CasosDeUso() {
                   {card.title}
                 </h3>
                 <ul className="space-y-2">
-                  {card.items.map((item, index) => (
+                  {card.items.map((item: any, index: number) => (
                     <li key={index} className="flex items-start gap-2 text-sm text-text-body">
                       <svg
                         className="w-5 h-5 text-accent-blue flex-shrink-0 mt-0.5"
