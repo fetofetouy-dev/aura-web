@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import Image from "next/image"
 import {
   LayoutDashboard,
+  Users,
   Zap,
   Store,
   Inbox,
@@ -19,6 +20,7 @@ import { getUnreadCount } from "@/lib/mock-data/inbox-messages"
 
 const navItems = [
   { href: "/backoffice/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/backoffice/customers", label: "Clientes", icon: Users },
   { href: "/backoffice/automations", label: "Automatizaciones", icon: Zap },
   { href: "/backoffice/marketplace", label: "Marketplace", icon: Store },
   { href: "/backoffice/inbox", label: "Centralizador", icon: Inbox, badge: getUnreadCount() },
