@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createSupabaseServerClient } from "@/lib/supabase-server"
-import { supabaseAdmin } from "@/lib/supabase"
+import { supabaseAdmin } from "@/lib/supabase-server"
 import { runLeadToCrm } from "@/lib/automations/lead-to-crm"
 
 export async function GET() {

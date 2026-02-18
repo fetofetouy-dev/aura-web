@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { createSupabaseServerClient } from "@/lib/supabase-server"
-import { supabaseAdmin } from "@/lib/supabase"
+import { supabaseAdmin } from "@/lib/supabase-server"
 
 export async function GET() {
   const supabase = createSupabaseServerClient()

@@ -1,4 +1,4 @@
-import { supabaseAdmin } from "@/lib/supabase"
+import { supabaseAdmin } from "@/lib/supabase-server"
 import { refreshAccessToken, sendGmail } from "@/lib/google-client"
 
 interface RunLeadToCrmOptions {
