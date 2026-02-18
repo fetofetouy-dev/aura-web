@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
-import { createSupabaseServerClient, supabaseAdmin } from "@/lib/supabase"
+import { createSupabaseServerClient } from "@/lib/supabase-server"
+import { supabaseAdmin } from "@/lib/supabase"
 import { refreshAccessToken, sendGmail } from "@/lib/google-client"
 
 /**

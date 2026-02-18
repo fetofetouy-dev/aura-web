@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createSupabaseServerClient } from "@/lib/supabase"
+import { createSupabaseServerClient } from "@/lib/supabase-server"
 import { runLeadToCrm } from "@/lib/automations/lead-to-crm"
 
 interface RunBody {
