@@ -1,101 +1,10 @@
 "use client"
 
-import { signIn, useSession } from "next-auth/react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import Link from "next/link"
 import Image from "next/image"
-
-export default function LoginPage() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-
-  // If already authenticated, redirect to backoffice
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.replace("/backoffice/dashboard")
-    }
-  }, [status, router])
-
-  async function handleSignIn() {
-    setIsLoading(true)
-    await signIn("google", { callbackUrl: "/backoffice/dashboard" })
-  }
-
-  if (status === "loading" || session) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-accent-blue border-t-transparent rounded-full animate-spin" />
-      </div>
-    )
-  }
-
-  return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        {/* Logo */}
-        <div className="text-center mb-10">
-          <Image
-            src="/aura-logo.svg"
-            alt="Aura"
-            width={120}
-            height={36}
-            className="brightness-200 mx-auto mb-4"
-          />
-          <h1 className="text-2xl font-bold text-text-primary">Iniciar sesión</h1>
-          <p className="text-text-muted text-sm mt-2">
-            Accedé al backoffice de Aura con tu cuenta de Google
-          </p>
-        </div>
-
-        {/* Card */}
-        <div className="bg-background-elevated border border-border rounded-2xl p-8 space-y-6">
-          {/* Google sign in button */}
-          <button
-            onClick={handleSignIn}
-            disabled={isLoading}
-            className="w-full flex items-center justify-center gap-3 bg-white text-gray-800 font-medium py-3 px-4 rounded-xl hover:bg-gray-100 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {isLoading ? (
-              <div className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <GoogleIcon />
-            )}
-            {isLoading ? "Redirigiendo..." : "Continuar con Google"}
-          </button>
-
-          {/* Scopes explanation */}
-          <div className="border-t border-border pt-4">
-            <p className="text-xs text-text-muted text-center mb-3">
-              Al iniciar sesión, Aura solicitará acceso a:
-            </p>
-            <ul className="space-y-2">
-              {[
-                { icon: "✉️", label: "Gmail", desc: "Para enviar emails automáticos desde tu cuenta" },
-                { icon: "📅", label: "Google Calendar", desc: "Para detectar y crear citas automáticamente" },
-              ].map((item) => (
-                <li key={item.label} className="flex items-start gap-2">
-                  <span className="text-sm">{item.icon}</span>
-                  <div>
-                    <span className="text-xs font-medium text-text-primary">{item.label}: </span>
-                    <span className="text-xs text-text-muted">{item.desc}</span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* Footer note */}
-        <p className="text-center text-xs text-text-muted mt-6">
-          Solo usamos estos permisos para ejecutar tus automatizaciones.
-          <br />
-          Nunca leemos tus emails ni compartimos tus datos.
-        </p>
-      </div>
-    </div>
-  )
-}
+import { createSupabaseBrowserClient } from "@/lib/supabase"
 
 function GoogleIcon() {
   return (
@@ -105,5 +14,145 @@ function GoogleIcon() {
       <path d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
       <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
     </svg>
+  )
+}
+
+export default function LoginPage() {
+  const router = useRouter()
+  const supabase = createSupabaseBrowserClient()
+
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) router.replace("/backoffice/dashboard")
+    })
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function handleEmailLogin(e: React.FormEvent) {
+    e.preventDefault()
+    setError(null)
+    setLoading(true)
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+
+    if (error) {
+      setError("Email o contraseña incorrectos")
+      setLoading(false)
+    } else {
+      router.replace("/backoffice/dashboard")
+    }
+  }
+
+  async function handleGoogleLogin() {
+    setError(null)
+    setGoogleLoading(true)
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+        scopes: [
+          "https://www.googleapis.com/auth/gmail.send",
+          "https://www.googleapis.com/auth/gmail.readonly",
+          "https://www.googleapis.com/auth/calendar.events",
+        ].join(" "),
+        queryParams: {
+          access_type: "offline",
+          prompt: "consent",
+        },
+      },
+    })
+
+    if (error) {
+      setError("Error al conectar con Google")
+      setGoogleLoading(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center px-4">
+      <div className="w-full max-w-sm">
+        <div className="text-center mb-10">
+          <Image
+            src="/aura-logo.svg"
+            alt="Aura"
+            width={120}
+            height={36}
+            className="brightness-200 mx-auto mb-4"
+          />
+          <h1 className="text-2xl font-bold text-text-primary">Iniciar sesión</h1>
+          <p className="text-text-muted text-sm mt-2">Accedé al backoffice de Aura</p>
+        </div>
+
+        <div className="bg-background-elevated border border-border rounded-2xl p-8 space-y-5">
+          <button
+            onClick={handleGoogleLogin}
+            disabled={googleLoading || loading}
+            className="w-full flex items-center justify-center gap-3 bg-white text-gray-800 font-medium py-3 px-4 rounded-xl hover:bg-gray-100 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {googleLoading ? (
+              <div className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <GoogleIcon />
+            )}
+            {googleLoading ? "Redirigiendo..." : "Continuar con Google"}
+          </button>
+
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-px bg-border" />
+            <span className="text-xs text-text-muted">o</span>
+            <div className="flex-1 h-px bg-border" />
+          </div>
+
+          <form onSubmit={handleEmailLogin} className="space-y-3">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder="Email"
+              className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-text-primary placeholder:text-text-muted text-sm focus:outline-none focus:border-accent-blue transition-colors"
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="Contraseña"
+              className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-text-primary placeholder:text-text-muted text-sm focus:outline-none focus:border-accent-blue transition-colors"
+            />
+
+            {error && (
+              <p className="text-xs text-red-400 bg-red-400/10 px-3 py-2 rounded-lg">{error}</p>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading || googleLoading}
+              className="w-full py-2.5 bg-accent-blue hover:bg-accent-blue/90 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              {loading ? "Iniciando sesión..." : "Iniciar sesión"}
+            </button>
+          </form>
+
+          <p className="text-center text-xs text-text-muted">
+            ¿No tenés cuenta?{" "}
+            <Link href="/register" className="text-accent-blue hover:underline">
+              Registrate
+            </Link>
+          </p>
+        </div>
+
+        <p className="text-center text-xs text-text-muted mt-6">
+          Al usar Google, Aura solicitará acceso a Gmail y Calendar
+          <br />para ejecutar tus automatizaciones.
+        </p>
+      </div>
+    </div>
   )
 }

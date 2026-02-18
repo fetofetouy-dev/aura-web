@@ -1,8 +1,10 @@
 "use client"
 
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { Bell, ChevronDown, LogOut } from "lucide-react"
-import { useSession, signOut } from "next-auth/react"
-import { getUnreadCount } from "@/lib/mock-data/inbox-messages"
+import { createSupabaseBrowserClient } from "@/lib/supabase"
+import type { User } from "@supabase/supabase-js"
 
 interface DemoTopBarProps {
   title: string
@@ -10,12 +12,27 @@ interface DemoTopBarProps {
 }
 
 export function DemoTopBar({ title, subtitle }: DemoTopBarProps) {
-  const unread = getUnreadCount()
-  const { data: session } = useSession()
+  const router = useRouter()
+  const [user, setUser] = useState<User | null>(null)
 
-  const name = session?.user?.name ?? "Usuario"
+  useEffect(() => {
+    const supabase = createSupabaseBrowserClient()
+    supabase.auth.getUser().then(({ data }) => setUser(data.user))
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setUser(session?.user ?? null)
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const name = user?.user_metadata?.full_name ?? user?.email?.split("@")[0] ?? "Usuario"
   const initial = name[0]?.toUpperCase() ?? "U"
-  const image = session?.user?.image
+  const image = user?.user_metadata?.avatar_url
+
+  async function handleSignOut() {
+    const supabase = createSupabaseBrowserClient()
+    await supabase.auth.signOut()
+    router.push("/login")
+  }
 
   return (
     <header className="h-14 border-b border-border bg-background-elevated flex items-center justify-between px-6 shrink-0">
@@ -28,9 +45,6 @@ export function DemoTopBar({ title, subtitle }: DemoTopBarProps) {
         {/* Notifications */}
         <button className="relative p-2 rounded-lg hover:bg-white/5 transition-colors">
           <Bell className="w-4 h-4 text-text-muted" />
-          {unread > 0 && (
-            <span className="absolute top-1 right-1 w-2 h-2 bg-accent-blue rounded-full" />
-          )}
         </button>
 
         {/* User */}
@@ -46,13 +60,13 @@ export function DemoTopBar({ title, subtitle }: DemoTopBarProps) {
             )}
             <div className="text-left hidden sm:block">
               <p className="text-xs font-medium text-text-primary">{name}</p>
-              <p className="text-xs text-text-muted">{session?.user?.email ?? "Admin"}</p>
+              <p className="text-xs text-text-muted">{user?.email ?? "Admin"}</p>
             </div>
             <ChevronDown className="w-3.5 h-3.5 text-text-muted" />
           </button>
 
           <button
-            onClick={() => signOut({ callbackUrl: "/login" })}
+            onClick={handleSignOut}
             className="p-2 rounded-lg hover:bg-white/5 transition-colors text-text-muted hover:text-red-400"
             title="Cerrar sesión"
           >

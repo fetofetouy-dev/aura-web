@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
-import { SessionProvider } from "@/components/SessionProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -40,11 +39,9 @@ export default function RootLayout({
     <html lang="es" className={inter.variable}>
       <body>
         <GoogleAnalytics />
-        <SessionProvider>
-          <LocaleProvider>
-            {children}
-          </LocaleProvider>
-        </SessionProvider>
+        <LocaleProvider>
+          {children}
+        </LocaleProvider>
       </body>
     </html>
   );

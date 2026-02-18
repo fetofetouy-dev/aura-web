@@ -1,30 +1,27 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import Image from "next/image"
+import { useEffect, useState } from "react"
 import {
   LayoutDashboard,
   Users,
   Zap,
   Store,
-  Inbox,
-  Bot,
   Settings,
   CreditCard,
   ArrowUpRight,
 } from "lucide-react"
-import { useSession } from "next-auth/react"
+import { createSupabaseBrowserClient } from "@/lib/supabase"
 import { cn } from "@/lib/cn"
-import { getUnreadCount } from "@/lib/mock-data/inbox-messages"
+import type { User } from "@supabase/supabase-js"
 
 const navItems = [
   { href: "/backoffice/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/backoffice/customers", label: "Clientes", icon: Users },
   { href: "/backoffice/automations", label: "Automatizaciones", icon: Zap },
   { href: "/backoffice/marketplace", label: "Marketplace", icon: Store },
-  { href: "/backoffice/inbox", label: "Centralizador", icon: Inbox, badge: getUnreadCount() },
-  { href: "/backoffice/assistant", label: "Bot IA", icon: Bot },
 ]
 
 const bottomItems = [
@@ -34,11 +31,27 @@ const bottomItems = [
 
 export function DemoSidebar() {
   const pathname = usePathname()
-  const { data: session } = useSession()
+  const router = useRouter()
+  const [user, setUser] = useState<User | null>(null)
 
-  const name = session?.user?.name ?? "Mi Empresa"
+  useEffect(() => {
+    const supabase = createSupabaseBrowserClient()
+    supabase.auth.getUser().then(({ data }) => setUser(data.user))
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setUser(session?.user ?? null)
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const name = user?.user_metadata?.full_name ?? user?.email?.split("@")[0] ?? "Mi Empresa"
   const initial = name[0]?.toUpperCase() ?? "M"
-  const image = session?.user?.image
+  const image = user?.user_metadata?.avatar_url
+
+  async function handleSignOut() {
+    const supabase = createSupabaseBrowserClient()
+    await supabase.auth.signOut()
+    router.push("/login")
+  }
 
   return (
     <aside className="w-64 min-h-screen bg-background-elevated border-r border-border flex flex-col shrink-0">
@@ -88,11 +101,6 @@ export function DemoSidebar() {
             >
               <Icon className="w-4 h-4 shrink-0" />
               <span className="flex-1">{item.label}</span>
-              {item.badge ? (
-                <span className="bg-accent-blue text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
-                  {item.badge}
-                </span>
-              ) : null}
             </Link>
           )
         })}
@@ -128,6 +136,13 @@ export function DemoSidebar() {
             Upgrade <ArrowUpRight className="w-3 h-3" />
           </button>
         </div>
+
+        <button
+          onClick={handleSignOut}
+          className="w-full text-left px-3 py-2 text-xs text-text-muted hover:text-red-400 transition-colors rounded-lg hover:bg-red-400/5"
+        >
+          Cerrar sesión
+        </button>
       </div>
     </aside>
   )
