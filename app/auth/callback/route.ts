@@ -17,6 +17,9 @@ export async function GET(request: NextRequest) {
 
   if (code) {
     const cookieStore = cookies()
+    // Capture cookies set during exchange so we can apply them to the redirect response
+    const pendingCookies: { name: string; value: string; options: Record<string, unknown> }[] = []
+
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -24,9 +27,7 @@ export async function GET(request: NextRequest) {
         cookies: {
           getAll() { return cookieStore.getAll() },
           setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
+            pendingCookies.push(...cookiesToSet)
           },
         },
       }
@@ -39,7 +40,7 @@ export async function GET(request: NextRequest) {
       const { data: { session } } = await supabase.auth.getSession()
 
       if (session?.provider_token && session.user?.email) {
-        await supabaseAdmin.from("google_credentials").upsert(
+        const { error: upsertError } = await supabaseAdmin.from("google_credentials").upsert(
           {
             user_email: session.user.email,
             access_token: session.provider_token,
@@ -47,14 +48,21 @@ export async function GET(request: NextRequest) {
             updated_at: new Date().toISOString(),
           },
           { onConflict: "user_email" }
-        ).catch((err) => console.error("[auth/callback] Failed to save Google tokens:", err))
+        )
+        if (upsertError) console.error("[auth/callback] Failed to save Google tokens:", upsertError)
       }
 
       const forwardedHost = request.headers.get("x-forwarded-host")
-      if (process.env.NODE_ENV === "development" || !forwardedHost) {
-        return NextResponse.redirect(`${origin}${next}`)
-      }
-      return NextResponse.redirect(`https://${forwardedHost}${next}`)
+      const redirectUrl = (process.env.NODE_ENV === "development" || !forwardedHost)
+        ? `${origin}${next}`
+        : `https://${forwardedHost}${next}`
+
+      const response = NextResponse.redirect(redirectUrl)
+      // Apply session cookies to the redirect response so middleware can read them
+      pendingCookies.forEach(({ name, value, options }) => {
+        response.cookies.set(name, value, options as Parameters<typeof response.cookies.set>[2])
+      })
+      return response
     }
   }
 
