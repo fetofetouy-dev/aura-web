@@ -4,32 +4,34 @@ import { useEffect } from "react"
 import { usePathname } from "next/navigation"
 import { createSupabaseBrowserClient } from "@/lib/supabase"
 
-/**
- * Global OAuth callback interceptor included in the root layout.
- *
- * Problem: Supabase may redirect to the Site URL (home page) instead of
- * /auth/callback when the redirectTo URL is not in the allowed list.
- * This component catches the ?code= param wherever the user lands
- * and completes the PKCE exchange + redirects to the dashboard.
- */
 export function GlobalAuthHandler() {
   const pathname = usePathname()
 
   useEffect(() => {
-    // /auth/callback has its own handler — don't double-exchange the code
     if (pathname === "/auth/callback") return
-
-    const url = new URL(window.location.href)
-    const code = url.searchParams.get("code")
-
-    if (!code) return
+    if (pathname.startsWith("/backoffice")) return
+    if (pathname === "/login" || pathname === "/register") return
 
     const supabase = createSupabaseBrowserClient()
-    supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
-      if (!error) {
-        window.location.replace("/backoffice/dashboard")
-      }
+
+    // 1. Subscribe FIRST so we don't miss any incoming SIGNED_IN events
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) window.location.replace("/backoffice/dashboard")
     })
+
+    // 2. Check for session that might already exist (auto-exchange may have
+    //    completed before this subscription was set up)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) window.location.replace("/backoffice/dashboard")
+    })
+
+    // 3. If ?code= is in URL and auto-exchange didn't trigger, do it manually
+    const code = new URL(window.location.href).searchParams.get("code")
+    if (code) {
+      supabase.auth.exchangeCodeForSession(code).catch(() => null)
+    }
+
+    return () => subscription.unsubscribe()
   }, [pathname])
 
   return null

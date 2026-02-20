@@ -7,15 +7,35 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     const supabase = createSupabaseBrowserClient()
 
-    const run = async () => {
-      const url = new URL(window.location.href)
-      const code = url.searchParams.get("code")
-      const rawNext = url.searchParams.get("next") ?? "/backoffice/dashboard"
-      const next =
-        rawNext.startsWith("/") && !rawNext.startsWith("//")
-          ? rawNext
-          : "/backoffice/dashboard"
+    const url = new URL(window.location.href)
+    const code = url.searchParams.get("code")
+    const rawNext = url.searchParams.get("next") ?? "/backoffice/dashboard"
+    const next =
+      rawNext.startsWith("/") && !rawNext.startsWith("//")
+        ? rawNext
+        : "/backoffice/dashboard"
 
+    const redirectToDashboard = (providerToken?: string | null, userEmail?: string | null) => {
+      if (providerToken && userEmail) {
+        fetch("/api/auth/save-google-tokens", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ access_token: providerToken, refresh_token: null }),
+        }).catch(() => null)
+      }
+      window.location.replace(next)
+    }
+
+    const run = async () => {
+      // Case 1: createBrowserClient singleton may have auto-exchanged the code
+      // already before this effect ran. Check for existing session first.
+      const { data: { session: existingSession } } = await supabase.auth.getSession()
+      if (existingSession) {
+        redirectToDashboard(existingSession.provider_token, existingSession.user?.email)
+        return
+      }
+
+      // Case 2: No session yet. If we have a code, exchange it manually.
       if (!code) {
         window.location.replace("/login")
         return
@@ -24,26 +44,19 @@ export default function AuthCallbackPage() {
       const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
       if (error) {
-        console.error("[auth/callback] exchange error:", error.message)
-        window.location.replace("/login")
+        // Case 3: Exchange failed — maybe it was already consumed.
+        // Do one final session check before giving up.
+        const { data: { session: retrySession } } = await supabase.auth.getSession()
+        if (retrySession) {
+          redirectToDashboard(retrySession.provider_token, retrySession.user?.email)
+        } else {
+          console.error("[auth/callback] exchange failed:", error.message)
+          window.location.replace("/login")
+        }
         return
       }
 
-      // Save Google tokens in the background — don't await, don't block the redirect
-      const session = data.session
-      if (session?.provider_token && session.user?.email) {
-        fetch("/api/auth/save-google-tokens", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            access_token: session.provider_token,
-            refresh_token: session.provider_refresh_token ?? null,
-          }),
-        }).catch(() => null)
-      }
-
-      // Exchange succeeded — go to dashboard
-      window.location.replace(next)
+      redirectToDashboard(data.session?.provider_token, data.session?.user?.email)
     }
 
     run()
