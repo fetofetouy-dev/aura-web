@@ -1,14 +1,16 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Zap } from "lucide-react"
+import { ArrowLeft, Zap, AlertTriangle, CheckCircle, XCircle } from "lucide-react"
 
 export default function NewCustomerPage() {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [gmailConnected, setGmailConnected] = useState<boolean | null>(null)
+  const [automationResult, setAutomationResult] = useState<{ success: boolean; error?: string } | null>(null)
 
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
@@ -16,9 +18,17 @@ export default function NewCustomerPage() {
   const [company, setCompany] = useState("")
   const [notes, setNotes] = useState("")
 
+  useEffect(() => {
+    fetch("/api/integrations/google/status")
+      .then((r) => r.json())
+      .then((data) => setGmailConnected(!!data.gmail))
+      .catch(() => setGmailConnected(false))
+  }, [])
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
+    setAutomationResult(null)
     setSaving(true)
 
     const res = await fetch("/api/customers", {
@@ -35,7 +45,15 @@ export default function NewCustomerPage() {
       return
     }
 
-    router.push("/backoffice/customers")
+    // If there was an automation attempt, show the result before redirecting
+    if (data.automationResult) {
+      setAutomationResult(data.automationResult)
+      setSaving(false)
+      // Redirect after 3s so the user can read the result
+      setTimeout(() => router.push("/backoffice/customers"), 3000)
+    } else {
+      router.push("/backoffice/customers")
+    }
   }
 
   return (
@@ -54,14 +72,58 @@ export default function NewCustomerPage() {
         </div>
       </div>
 
-      {/* Automation notice */}
-      {email.trim() && (
-        <div className="flex items-start gap-3 p-3 rounded-lg bg-accent-blue/10 border border-accent-blue/20 mb-6">
-          <Zap className="w-4 h-4 text-accent-blue mt-0.5 shrink-0" />
-          <p className="text-xs text-accent-blue">
-            Se enviará un email de bienvenida automáticamente a <strong>{email}</strong> al guardar.
-          </p>
+      {/* Automation result (shown after save) */}
+      {automationResult && (
+        <div className={`flex items-start gap-3 p-3 rounded-lg border mb-6 ${
+          automationResult.success
+            ? "bg-green-400/10 border-green-400/20"
+            : "bg-yellow-400/10 border-yellow-400/20"
+        }`}>
+          {automationResult.success ? (
+            <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 shrink-0" />
+          ) : (
+            <XCircle className="w-4 h-4 text-yellow-400 mt-0.5 shrink-0" />
+          )}
+          <div>
+            <p className={`text-xs font-medium ${automationResult.success ? "text-green-400" : "text-yellow-400"}`}>
+              {automationResult.success
+                ? "Cliente guardado. Email de bienvenida enviado correctamente."
+                : "Cliente guardado, pero no se pudo enviar el email de bienvenida."}
+            </p>
+            {!automationResult.success && automationResult.error && (
+              <p className="text-xs text-text-muted mt-0.5">
+                {automationResult.error.includes("Gmail no conectado")
+                  ? <>Gmail no está conectado. <Link href="/backoffice/settings" className="text-accent-blue hover:underline">Conectalo en Configuración</Link>.</>
+                  : automationResult.error
+                }
+              </p>
+            )}
+            <p className="text-xs text-text-muted mt-1">Redirigiendo a clientes...</p>
+          </div>
         </div>
+      )}
+
+      {/* Automation notice (shown while filling form, only when email is typed) */}
+      {!automationResult && email.trim() && (
+        gmailConnected === false ? (
+          <div className="flex items-start gap-3 p-3 rounded-lg bg-yellow-400/10 border border-yellow-400/20 mb-6">
+            <AlertTriangle className="w-4 h-4 text-yellow-400 mt-0.5 shrink-0" />
+            <p className="text-xs text-yellow-400">
+              Gmail no está conectado. No se enviará el email de bienvenida automáticamente.{" "}
+              <Link href="/backoffice/settings" className="underline hover:text-yellow-300">
+                Conectar Gmail en Configuración
+              </Link>
+              .
+            </p>
+          </div>
+        ) : gmailConnected === true ? (
+          <div className="flex items-start gap-3 p-3 rounded-lg bg-accent-blue/10 border border-accent-blue/20 mb-6">
+            <Zap className="w-4 h-4 text-accent-blue mt-0.5 shrink-0" />
+            <p className="text-xs text-accent-blue">
+              Se enviará un email de bienvenida automáticamente a <strong>{email}</strong> al guardar.
+            </p>
+          </div>
+        ) : null
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -133,21 +195,23 @@ export default function NewCustomerPage() {
         )}
 
         {/* Actions */}
-        <div className="flex items-center gap-3 pt-2">
-          <button
-            type="submit"
-            disabled={saving}
-            className="flex-1 py-2.5 bg-accent-blue hover:bg-accent-blue/90 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
-          >
-            {saving ? "Guardando..." : "Guardar cliente"}
-          </button>
-          <Link
-            href="/backoffice/customers"
-            className="px-4 py-2.5 text-sm text-text-muted hover:text-text-primary border border-border rounded-lg transition-colors"
-          >
-            Cancelar
-          </Link>
-        </div>
+        {!automationResult && (
+          <div className="flex items-center gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={saving}
+              className="flex-1 py-2.5 bg-accent-blue hover:bg-accent-blue/90 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              {saving ? "Guardando..." : "Guardar cliente"}
+            </button>
+            <Link
+              href="/backoffice/customers"
+              className="px-4 py-2.5 text-sm text-text-muted hover:text-text-primary border border-border rounded-lg transition-colors"
+            >
+              Cancelar
+            </Link>
+          </div>
+        )}
       </form>
     </div>
   )
