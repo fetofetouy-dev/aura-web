@@ -41,10 +41,14 @@ export default function LoginPage() {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
-      setError("Email o contraseña incorrectos")
+      setError(error.message === "Email not confirmed"
+        ? "Confirmá tu email antes de iniciar sesión"
+        : "Email o contraseña incorrectos"
+      )
       setLoading(false)
     } else {
-      router.replace("/backoffice/dashboard")
+      // Full page navigation ensures middleware reads fresh session cookies
+      window.location.replace("/backoffice/dashboard")
     }
   }
 

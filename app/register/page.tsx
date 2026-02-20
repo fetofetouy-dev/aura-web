@@ -1,13 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { createSupabaseBrowserClient } from "@/lib/supabase"
 
 export default function RegisterPage() {
-  const router = useRouter()
   const supabase = createSupabaseBrowserClient()
 
   const [email, setEmail] = useState("")
@@ -32,7 +30,15 @@ export default function RegisterPage() {
 
     setLoading(true)
 
-    const { error } = await supabase.auth.signUp({ email, password })
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        // Redirect to /auth/callback so the confirmation link creates a session
+        // and lands the user on the dashboard instead of the home page.
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
 
     if (error) {
       setError(error.message)
