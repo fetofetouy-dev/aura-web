@@ -8,5 +8,9 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
  * Only uses public env vars — safe to import in client components.
  */
 export function createSupabaseBrowserClient() {
-  return createClient(supabaseUrl, supabaseAnonKey)
+  return createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      flowType: "pkce",
+    },
+  })
 }
