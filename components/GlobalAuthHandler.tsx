@@ -9,8 +9,9 @@ export function GlobalAuthHandler() {
 
   useEffect(() => {
     if (pathname === "/auth/callback") return
+    if (pathname === "/auth/reset-password") return
     if (pathname.startsWith("/backoffice")) return
-    if (pathname === "/login" || pathname === "/register") return
+    if (pathname === "/login" || pathname === "/register" || pathname === "/forgot-password") return
 
     const supabase = createSupabaseBrowserClient()
 

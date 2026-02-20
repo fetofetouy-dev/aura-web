@@ -122,14 +122,21 @@ export default function LoginPage() {
               placeholder="Email"
               className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-text-primary placeholder:text-text-muted text-sm focus:outline-none focus:border-accent-blue transition-colors"
             />
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="Contraseña"
-              className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-text-primary placeholder:text-text-muted text-sm focus:outline-none focus:border-accent-blue transition-colors"
-            />
+            <div>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="Contraseña"
+                className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-text-primary placeholder:text-text-muted text-sm focus:outline-none focus:border-accent-blue transition-colors"
+              />
+              <div className="text-right mt-1">
+                <Link href="/forgot-password" className="text-xs text-text-muted hover:text-accent-blue transition-colors">
+                  ¿Olvidaste tu contraseña?
+                </Link>
+              </div>
+            </div>
 
             {error && (
               <p className="text-xs text-red-400 bg-red-400/10 px-3 py-2 rounded-lg">{error}</p>
