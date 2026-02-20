@@ -24,11 +24,26 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // Refresh session — must call getUser() not getSession()
   const { data: { user } } = await supabase.auth.getUser()
+  const { pathname, searchParams } = request.nextUrl
 
-  // Redirect to /login if accessing /backoffice without a session
-  if (!user && request.nextUrl.pathname.startsWith("/backoffice")) {
+  // If Supabase redirected the OAuth code to the home page (Site URL fallback),
+  // forward it to /auth/callback server-side — prevents flash of home page content.
+  if (pathname === "/" && searchParams.has("code")) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/auth/callback"
+    return NextResponse.redirect(url)
+  }
+
+  // Redirect already-authenticated users away from login — no flash.
+  if (user && pathname === "/login") {
+    const url = request.nextUrl.clone()
+    url.pathname = "/backoffice/dashboard"
+    return NextResponse.redirect(url)
+  }
+
+  // Redirect unauthenticated users out of backoffice.
+  if (!user && pathname.startsWith("/backoffice")) {
     const url = request.nextUrl.clone()
     url.pathname = "/login"
     return NextResponse.redirect(url)
@@ -38,5 +53,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/backoffice/:path*"],
+  matcher: ["/", "/login", "/backoffice/:path*"],
 }
