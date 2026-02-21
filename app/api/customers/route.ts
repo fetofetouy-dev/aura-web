@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createSupabaseServerClient } from "@/lib/supabase-server"
 import { supabaseAdmin } from "@/lib/supabase-server"
-import { runLeadToCrm } from "@/lib/automations/lead-to-crm"
+import { inngest } from "@/lib/inngest"
 import { logInteraction } from "@/lib/interactions"
 
 export async function GET() {
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const body = await req.json().catch(() => ({}))
-  const { name, email, phone, company, notes } = body
+  const { name, email, phone, company, notes, birthday } = body
 
   if (!name?.trim()) return NextResponse.json({ error: "El nombre es requerido" }, { status: 400 })
 
@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
       phone: phone?.trim() || null,
       company: company?.trim() || null,
       notes: notes?.trim() || null,
+      birthday: birthday || null,
     })
     .select()
     .single()
@@ -53,15 +54,18 @@ export async function POST(req: NextRequest) {
     metadata: { source: "manual", hasEmail: !!email?.trim() },
   })
 
-  let automationResult = null
+  // Emit event to Inngest — lead-to-crm runs in background
   if (email?.trim()) {
-    automationResult = await runLeadToCrm({
-      tenantId: user.id,
-      leadName: name.trim(),
-      leadEmail: email.trim(),
-      customerId: customer.id,
+    await inngest.send({
+      name: "customer/created",
+      data: {
+        tenantId: user.id,
+        customerId: customer.id,
+        leadName: name.trim(),
+        leadEmail: email.trim(),
+      },
     })
   }
 
-  return NextResponse.json({ customer, automationResult }, { status: 201 })
+  return NextResponse.json({ customer, automationQueued: !!email?.trim() }, { status: 201 })
 }

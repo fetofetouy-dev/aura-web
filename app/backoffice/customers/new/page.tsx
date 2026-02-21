@@ -45,12 +45,11 @@ export default function NewCustomerPage() {
       return
     }
 
-    // If there was an automation attempt, show the result before redirecting
-    if (data.automationResult) {
-      setAutomationResult(data.automationResult)
+    // Automation now runs in background via Inngest — just redirect
+    if (data.automationQueued) {
+      setAutomationResult({ success: true })
       setSaving(false)
-      // Redirect after 3s so the user can read the result
-      setTimeout(() => router.push("/backoffice/customers"), 3000)
+      setTimeout(() => router.push("/backoffice/customers"), 2000)
     } else {
       router.push("/backoffice/customers")
     }
@@ -87,7 +86,7 @@ export default function NewCustomerPage() {
           <div>
             <p className={`text-xs font-medium ${automationResult.success ? "text-green-400" : "text-yellow-400"}`}>
               {automationResult.success
-                ? "Cliente guardado. Email de bienvenida enviado correctamente."
+                ? "Cliente guardado. Email de bienvenida en camino."
                 : "Cliente guardado, pero no se pudo enviar el email de bienvenida."}
             </p>
             {!automationResult.success && automationResult.error && (
