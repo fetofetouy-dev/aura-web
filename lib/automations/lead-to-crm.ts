@@ -1,10 +1,12 @@
 import { supabaseAdmin } from "@/lib/supabase-server"
 import { refreshAccessToken, sendGmail } from "@/lib/google-client"
+import { logInteraction } from "@/lib/interactions"
 
 interface RunLeadToCrmOptions {
-  tenantEmail: string
+  tenantId: string
   leadName: string
   leadEmail: string
+  customerId: string
 }
 
 interface RunLeadToCrmResult {
@@ -18,14 +20,15 @@ interface RunLeadToCrmResult {
  * Fetches stored Google credentials, refreshes the token, and sends a welcome Gmail.
  */
 export async function runLeadToCrm({
-  tenantEmail,
+  tenantId,
   leadName,
   leadEmail,
+  customerId,
 }: RunLeadToCrmOptions): Promise<RunLeadToCrmResult> {
   const { data: creds } = await supabaseAdmin
     .from("google_credentials")
     .select("refresh_token")
-    .eq("user_email", tenantEmail)
+    .eq("tenant_id", tenantId)
     .single()
 
   if (!creds?.refresh_token) {
@@ -61,6 +64,19 @@ export async function runLeadToCrm({
           </p>
         </div>
       `,
+    })
+
+    // Log the email_sent interaction
+    await logInteraction({
+      tenantId,
+      customerId,
+      type: "email_sent",
+      metadata: {
+        automation: "lead-to-crm",
+        messageId,
+        to: leadEmail,
+        subject: `¡Hola ${leadName}! Gracias por tu interés`,
+      },
     })
 
     return {

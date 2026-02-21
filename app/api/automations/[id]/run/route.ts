@@ -23,7 +23,7 @@ export async function POST(
     const { leadName = "Lead", leadEmail } = body
     if (!leadEmail) return NextResponse.json({ error: "leadEmail es requerido" }, { status: 400 })
 
-    const result = await runLeadToCrm({ tenantEmail: user.email, leadName, leadEmail })
+    const result = await runLeadToCrm({ tenantId: user.id, leadName, leadEmail, customerId: "manual" })
 
     if (!result.success) {
       return NextResponse.json({ success: false, error: result.error, automationId: id, startedAt }, { status: 500 })

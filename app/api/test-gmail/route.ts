@@ -10,12 +10,12 @@ import { refreshAccessToken, sendGmail } from "@/lib/google-client"
 export async function POST() {
   const supabase = createSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { data: creds, error } = await supabaseAdmin
     .from("google_credentials")
     .select("refresh_token")
-    .eq("user_email", user.email)
+    .eq("tenant_id", user.id)
     .single()
 
   if (error || !creds?.refresh_token) {
@@ -25,7 +25,7 @@ export async function POST() {
   try {
     const { accessToken } = await refreshAccessToken(creds.refresh_token)
     const { messageId } = await sendGmail(accessToken, {
-      to: user.email,
+      to: user.email!,
       subject: "✅ Test de Gmail — Aura funciona!",
       body: `
         <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; padding: 24px;">

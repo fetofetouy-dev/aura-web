@@ -5,7 +5,7 @@ export async function POST(request: Request) {
   const supabase = createSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user?.email) {
+  if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
   }
 
@@ -14,12 +14,13 @@ export async function POST(request: Request) {
   if (access_token) {
     const { error } = await supabaseAdmin.from("google_credentials").upsert(
       {
+        tenant_id: user.id,
         user_email: user.email,
         access_token,
         refresh_token: refresh_token ?? null,
         updated_at: new Date().toISOString(),
       },
-      { onConflict: "user_email" }
+      { onConflict: "tenant_id" }
     )
     if (error) console.error("[save-google-tokens] upsert error:", error)
   }

@@ -5,12 +5,12 @@ import { supabaseAdmin } from "@/lib/supabase-server"
 export async function GET() {
   const supabase = createSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { data, error } = await supabaseAdmin
     .from("google_credentials")
     .select("refresh_token, expires_at")
-    .eq("user_email", user.email)
+    .eq("tenant_id", user.id)
     .single()
 
   if (error || !data) return NextResponse.json({ gmail: false, calendar: false })
