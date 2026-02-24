@@ -59,7 +59,7 @@ export function DemoSidebar() {
       <div className="p-5 border-b border-border">
         <Link href="/">
           <Image
-            src="/aura-logo.svg"
+            src="/aura-logo.png"
             alt="Aura"
             width={100}
             height={30}

@@ -1,13 +1,10 @@
 import { NextResponse } from "next/server"
-import { createSupabaseServerClient, supabaseAdmin } from "@/lib/supabase-server"
+import { supabaseAdmin } from "@/lib/supabase-server"
+import { requireAuth } from "@/lib/api-auth"
 
 export async function POST(request: Request) {
-  const supabase = createSupabaseServerClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
-  }
+  const { user, error } = await requireAuth()
+  if (error) return error
 
   const { access_token, refresh_token } = await request.json()
 

@@ -1,45 +1,44 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import Link from "next/link"
-import { Users, Plus, Mail, Phone, Building2, Trash2, ChevronRight } from "lucide-react"
+import { Users, Plus, Upload, Mail, Phone, Building2, Trash2, ChevronRight, ChevronLeft } from "lucide-react"
+import type { Customer } from "@/lib/types"
 
-interface Customer {
-  id: string
-  name: string
-  email: string | null
-  phone: string | null
-  company: string | null
-  notes: string | null
-  status: string
-  created_at: string
-}
+const PAGE_SIZE = 50
 
 export default function CustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([])
+  const [total, setTotal] = useState(0)
+  const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  async function fetchCustomers() {
-    const res = await fetch("/api/customers")
+  const fetchCustomers = useCallback(async (p: number) => {
+    setLoading(true)
+    const res = await fetch(`/api/customers?page=${p}&limit=${PAGE_SIZE}`)
     if (res.ok) {
-      const data = await res.json()
-      setCustomers(data)
+      const json = await res.json()
+      setCustomers(json.data)
+      setTotal(json.total)
     }
     setLoading(false)
-  }
+  }, [])
 
   useEffect(() => {
-    fetchCustomers()
-  }, [])
+    fetchCustomers(page)
+  }, [page, fetchCustomers])
 
   async function handleDelete(id: string) {
     if (!confirm("¿Eliminar este cliente?")) return
     setDeletingId(id)
     await fetch(`/api/customers/${id}`, { method: "DELETE" })
     setCustomers((prev) => prev.filter((c) => c.id !== id))
+    setTotal((t) => t - 1)
     setDeletingId(null)
   }
+
+  const totalPages = Math.ceil(total / PAGE_SIZE)
 
   return (
     <div className="flex-1 p-6 space-y-6">
@@ -48,16 +47,25 @@ export default function CustomersPage() {
         <div>
           <h1 className="text-xl font-semibold text-text-primary">Clientes</h1>
           <p className="text-sm text-text-muted mt-0.5">
-            {loading ? "Cargando..." : `${customers.length} cliente${customers.length !== 1 ? "s" : ""}`}
+            {loading ? "Cargando..." : `${total} cliente${total !== 1 ? "s" : ""}`}
           </p>
         </div>
-        <Link
-          href="/backoffice/customers/new"
-          className="flex items-center gap-2 px-4 py-2 bg-accent-blue hover:bg-accent-blue/90 text-white text-sm font-medium rounded-lg transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Nuevo cliente
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/backoffice/customers/import"
+            className="flex items-center gap-2 px-4 py-2 border border-border hover:border-accent-blue/40 text-text-muted hover:text-text-primary text-sm font-medium rounded-lg transition-colors"
+          >
+            <Upload className="w-4 h-4" />
+            Importar CSV
+          </Link>
+          <Link
+            href="/backoffice/customers/new"
+            className="flex items-center gap-2 px-4 py-2 bg-accent-blue hover:bg-accent-blue/90 text-white text-sm font-medium rounded-lg transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Nuevo cliente
+          </Link>
+        </div>
       </div>
 
       {/* Loading */}
@@ -70,7 +78,7 @@ export default function CustomersPage() {
       )}
 
       {/* Empty state */}
-      {!loading && customers.length === 0 && (
+      {!loading && customers.length === 0 && page === 1 && (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-4">
             <Users className="w-6 h-6 text-text-muted" />
@@ -149,6 +157,31 @@ export default function CustomersPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Pagination */}
+      {!loading && totalPages > 1 && (
+        <div className="flex items-center justify-center gap-3 pt-2">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="flex items-center gap-1 px-3 py-1.5 text-xs text-text-muted hover:text-text-primary disabled:opacity-30 border border-border rounded-lg transition-colors"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+            Anterior
+          </button>
+          <span className="text-xs text-text-muted">
+            Página {page} de {totalPages}
+          </span>
+          <button
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+            className="flex items-center gap-1 px-3 py-1.5 text-xs text-text-muted hover:text-text-primary disabled:opacity-30 border border-border rounded-lg transition-colors"
+          >
+            Siguiente
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
         </div>
       )}
     </div>

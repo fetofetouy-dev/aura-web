@@ -2,6 +2,7 @@ import { inngest } from "@/lib/inngest"
 import { supabaseAdmin } from "@/lib/supabase-server"
 import { refreshAccessToken, sendGmail } from "@/lib/google-client"
 import { logInteraction } from "@/lib/interactions"
+import { welcomeEmail } from "@/lib/email-templates"
 
 export const leadToCrmFunction = inngest.createFunction(
   {
@@ -68,22 +69,7 @@ export const leadToCrmFunction = inngest.createFunction(
 
     // Send welcome email
     const { messageId } = await step.run("send-welcome-email", async () => {
-      return sendGmail(accessToken, {
-        to: leadEmail,
-        subject: `¡Hola ${leadName}! Gracias por tu interés`,
-        body: `
-          <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; padding: 24px; background: #f9f9f9; border-radius: 8px;">
-            <h2 style="color: #3B82F6;">¡Hola ${leadName}! 👋</h2>
-            <p>Gracias por ponerte en contacto con nosotros.</p>
-            <p>Hemos recibido tu consulta y un miembro de nuestro equipo se pondrá en contacto contigo en las próximas horas.</p>
-            <p>Mientras tanto, podés explorar más sobre nuestros servicios en nuestra web.</p>
-            <br/>
-            <p style="color: #6B7280; font-size: 13px;">
-              Este email fue generado automáticamente por Aura Automations.
-            </p>
-          </div>
-        `,
-      })
+      return sendGmail(accessToken, welcomeEmail(leadName, leadEmail))
     })
 
     // Log interaction

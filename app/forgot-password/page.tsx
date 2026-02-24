@@ -54,7 +54,7 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
           <Image
-            src="/aura-logo.svg"
+            src="/aura-logo.png"
             alt="Aura"
             width={120}
             height={36}

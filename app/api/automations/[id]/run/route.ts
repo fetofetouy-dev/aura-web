@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createSupabaseServerClient } from "@/lib/supabase-server"
+import { requireAuth } from "@/lib/api-auth"
 import { runLeadToCrm } from "@/lib/automations/lead-to-crm"
 
 interface RunBody {
@@ -11,9 +11,8 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const supabase = createSupabaseServerClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const { user, error } = await requireAuth()
+  if (error) return error
 
   const { id } = await params
   const body: RunBody = await req.json().catch(() => ({}))

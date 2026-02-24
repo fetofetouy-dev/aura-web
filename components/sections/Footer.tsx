@@ -15,7 +15,7 @@ export function Footer() {
           {/* Logo & Description */}
           <div>
             <Image
-              src="/aura-logo.svg"
+              src="/aura-logo.png"
               alt="Aura Logo"
               width={200}
               height={60}

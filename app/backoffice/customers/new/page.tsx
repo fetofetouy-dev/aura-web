@@ -17,6 +17,7 @@ export default function NewCustomerPage() {
   const [phone, setPhone] = useState("")
   const [company, setCompany] = useState("")
   const [notes, setNotes] = useState("")
+  const [birthday, setBirthday] = useState("")
 
   useEffect(() => {
     fetch("/api/integrations/google/status")
@@ -34,7 +35,7 @@ export default function NewCustomerPage() {
     const res = await fetch("/api/customers", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, phone, company, notes }),
+      body: JSON.stringify({ name, email, phone, company, notes, birthday: birthday || undefined }),
     })
 
     const data = await res.json()
@@ -186,6 +187,20 @@ export default function NewCustomerPage() {
             placeholder="Información adicional..."
             rows={3}
             className="w-full px-3 py-2.5 rounded-lg bg-background-elevated border border-border text-text-primary placeholder:text-text-muted text-sm focus:outline-none focus:border-accent-blue transition-colors resize-none"
+          />
+        </div>
+
+        {/* Birthday */}
+        <div>
+          <label className="block text-sm font-medium text-text-primary mb-1.5">
+            Cumpleaños
+            <span className="ml-1.5 text-xs text-text-muted font-normal">(opcional — activa email automático)</span>
+          </label>
+          <input
+            type="date"
+            value={birthday}
+            onChange={(e) => setBirthday(e.target.value)}
+            className="w-full px-3 py-2.5 rounded-lg bg-background-elevated border border-border text-text-primary text-sm focus:outline-none focus:border-accent-blue transition-colors"
           />
         </div>
 
