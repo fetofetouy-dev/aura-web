@@ -7,6 +7,7 @@ import { useEffect, useState } from "react"
 import {
   LayoutDashboard,
   Users,
+  CalendarDays,
   Zap,
   Store,
   Settings,
@@ -20,6 +21,7 @@ import type { User } from "@supabase/supabase-js"
 const navItems = [
   { href: "/backoffice/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/backoffice/customers", label: "Clientes", icon: Users },
+  { href: "/backoffice/appointments", label: "Citas", icon: CalendarDays },
   { href: "/backoffice/automations", label: "Automatizaciones", icon: Zap },
   { href: "/backoffice/marketplace", label: "Marketplace", icon: Store },
 ]

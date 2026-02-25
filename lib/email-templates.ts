@@ -42,6 +42,25 @@ export function birthdayEmail(name: string, email: string): EmailContent {
   }
 }
 
+export function reactivationEmail(name: string, email: string, daysSinceLastVisit: number): EmailContent {
+  return {
+    to: email,
+    subject: `${name}, ¡te extrañamos! 💙`,
+    body: `
+      <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; padding: 24px; background: #f9f9f9; border-radius: 8px;">
+        <h2 style="color: #3B82F6;">¡Hola ${name}! 👋</h2>
+        <p>Hace ${daysSinceLastVisit} días que no nos visitás y queríamos saber cómo estás.</p>
+        <p>Nos encantaría volver a verte. Si necesitás agendar una cita o tenés alguna consulta, no dudes en escribirnos.</p>
+        <p>¡Te esperamos!</p>
+        <br/>
+        <p style="color: #6B7280; font-size: 13px;">
+          Este email fue generado automáticamente por Aura Automations.
+        </p>
+      </div>
+    `,
+  }
+}
+
 export function testEmail(toEmail: string): EmailContent {
   return {
     to: toEmail,

@@ -46,6 +46,25 @@ export interface GoogleCredentials {
   updated_at: string
 }
 
+export type AppointmentStatus = "scheduled" | "confirmed" | "completed" | "cancelled" | "noshow"
+
+export interface Appointment {
+  id: string
+  tenant_id: string
+  customer_id: string
+  title: string
+  date: string          // YYYY-MM-DD
+  start_time: string    // HH:MM (24h)
+  end_time: string      // HH:MM (24h)
+  status: AppointmentStatus
+  notes: string | null
+  reminder_sent: boolean
+  created_at: string
+  updated_at: string
+  // Joined fields (optional, from select with customer)
+  customer?: Pick<Customer, "id" | "name" | "email" | "phone">
+}
+
 export interface WebhookEndpoint {
   id: string
   tenant_id: string

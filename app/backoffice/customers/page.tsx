@@ -47,6 +47,9 @@ export default function CustomersPage() {
         <div>
           <h1 className="text-xl font-semibold text-text-primary">Clientes</h1>
           <p className="text-sm text-text-muted mt-0.5">
+            Tu base de clientes centralizada. Importá desde CSV o agregá manualmente. Al agregar un cliente con email, Aura envía automáticamente un email de bienvenida.
+          </p>
+          <p className="text-xs text-text-muted mt-1">
             {loading ? "Cargando..." : `${total} cliente${total !== 1 ? "s" : ""}`}
           </p>
         </div>

@@ -92,8 +92,10 @@ export default function SettingsPage() {
       <DemoTopBar title="Configuración" />
       <main className="flex-1 p-6 space-y-8 max-w-3xl">
         <div>
-          <h1 className="text-2xl font-bold text-text-primary">Configuración</h1>
-          <p className="text-text-muted text-sm mt-1">Conectá tus herramientas para que las automatizaciones funcionen.</p>
+          <h1 className="text-xl font-semibold text-text-primary">Configuración</h1>
+          <p className="text-sm text-text-muted mt-0.5">
+            Conectá tu cuenta de Google para habilitar el envío automático de emails. Sin Gmail conectado, las automatizaciones no pueden enviar emails a tus clientes.
+          </p>
         </div>
 
         <section>

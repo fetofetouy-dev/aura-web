@@ -84,13 +84,27 @@ export async function POST(req: NextRequest) {
     const withoutEmail = batch.filter((r) => !r.email)
 
     if (withEmail.length > 0) {
-      const { data, error } = await supabaseAdmin
+      // Try upsert first (requires UNIQUE constraint on tenant_id,email)
+      const { data, error: upsertErr } = await supabaseAdmin
         .from("customers")
         .upsert(withEmail, { onConflict: "tenant_id,email", ignoreDuplicates: false })
         .select("id, email")
 
-      if (!error && data) inserted += data.length
-      else if (error) skipped += withEmail.length
+      if (!upsertErr && data) {
+        inserted += data.length
+      } else {
+        // Fallback: insert normally if upsert fails (e.g. no UNIQUE constraint)
+        const { data: fallbackData, error: insertErr } = await supabaseAdmin
+          .from("customers")
+          .insert(withEmail)
+          .select("id")
+
+        if (!insertErr && fallbackData) inserted += fallbackData.length
+        else if (insertErr) {
+          console.error("[import] insert fallback failed:", insertErr.message)
+          skipped += withEmail.length
+        }
+      }
     }
 
     if (withoutEmail.length > 0) {
