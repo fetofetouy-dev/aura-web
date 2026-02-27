@@ -9,6 +9,8 @@ export interface Customer {
   birthday: string | null
   segment: string
   status: string
+  metadata: Record<string, string> | null
+  source: string
   last_interaction_at: string | null
   created_at: string
 }

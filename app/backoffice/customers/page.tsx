@@ -47,7 +47,7 @@ export default function CustomersPage() {
         <div>
           <h1 className="text-xl font-semibold text-text-primary">Clientes</h1>
           <p className="text-sm text-text-muted mt-0.5">
-            Tu base de clientes centralizada. Importá desde CSV o agregá manualmente. Al agregar un cliente con email, Aura envía automáticamente un email de bienvenida.
+            Vista de los datos que Aura usa para ejecutar automatizaciones. Los datos se importan desde tu sistema, CSV o webhook.
           </p>
           <p className="text-xs text-text-muted mt-1">
             {loading ? "Cargando..." : `${total} cliente${total !== 1 ? "s" : ""}`}
@@ -104,8 +104,9 @@ export default function CustomersPage() {
       {!loading && customers.length > 0 && (
         <div className="space-y-2">
           {customers.map((customer) => (
-            <div
+            <Link
               key={customer.id}
+              href={`/backoffice/customers/${customer.id}`}
               className="flex items-center gap-4 p-4 rounded-xl bg-background-elevated border border-border hover:border-accent-blue/30 transition-colors group"
             >
               {/* Avatar */}
@@ -138,6 +139,20 @@ export default function CustomersPage() {
                 </div>
               </div>
 
+              {/* Source badge */}
+              {customer.source && (
+                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full shrink-0 hidden sm:block ${
+                  customer.source === "csv" ? "bg-amber-400/10 text-amber-400" :
+                  customer.source?.startsWith("webhook:") ? "bg-violet-400/10 text-violet-400" :
+                  "bg-white/5 text-text-muted"
+                }`}>
+                  {customer.source === "manual" ? "Manual" :
+                   customer.source === "csv" ? "CSV" :
+                   customer.source?.startsWith("webhook:") ? `Webhook` :
+                   customer.source}
+                </span>
+              )}
+
               {/* Date */}
               <span className="text-xs text-text-muted shrink-0 hidden sm:block">
                 {new Date(customer.created_at).toLocaleDateString("es-AR", {
@@ -150,7 +165,7 @@ export default function CustomersPage() {
               {/* Actions */}
               <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
-                  onClick={() => handleDelete(customer.id)}
+                  onClick={(e) => { e.preventDefault(); handleDelete(customer.id) }}
                   disabled={deletingId === customer.id}
                   className="p-1.5 rounded-lg text-text-muted hover:text-red-400 hover:bg-red-400/10 transition-colors"
                 >
@@ -158,7 +173,7 @@ export default function CustomersPage() {
                 </button>
                 <ChevronRight className="w-4 h-4 text-text-muted" />
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}

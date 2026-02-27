@@ -49,6 +49,7 @@ export async function POST(req: NextRequest) {
       company: company?.trim() || null,
       notes: notes?.trim() || null,
       birthday: birthday || null,
+      source: "manual",
     })
     .select()
     .single()

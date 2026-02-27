@@ -57,6 +57,21 @@ export async function POST(
     mappedData[auraField] = value
   }
 
+  // If mapping includes customer fields, upsert the customer
+  const customerName = mappedData.leadName as string | undefined
+  const customerEmail = mappedData.leadEmail as string | undefined
+  if (customerName && customerEmail) {
+    await supabaseAdmin
+      .from("customers")
+      .upsert({
+        tenant_id: endpoint.tenant_id,
+        name: customerName,
+        email: customerEmail.toLowerCase(),
+        phone: (mappedData.leadPhone as string) || null,
+        source: `webhook:${source}`,
+      }, { onConflict: "tenant_id,email", ignoreDuplicates: false })
+  }
+
   // Emit event to Inngest
   await inngest.send({
     name: "webhook/received",

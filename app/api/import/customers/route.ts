@@ -27,15 +27,28 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 })
   }
 
-  // Apply mapping to each raw CSV row → ImportRow
-  const mapped: ImportRow[] = body.rows.map((rawRow) => {
+  // Collect CSV columns for metadata detection
+  const allCsvColumns = Object.keys(body.rows[0] ?? {})
+  const mappedCsvColumns = new Set(body.mapping.map((m) => m.csvColumn))
+
+  // Apply mapping to each raw CSV row → ImportRow + metadata for unmapped columns
+  const mapped: (ImportRow & { _metadata?: Record<string, string> })[] = body.rows.map((rawRow) => {
     const row: ImportRow = {}
     for (const { csvColumn, auraField } of body.mapping) {
       if (auraField === "skip") continue
       const value = rawRow[csvColumn]?.trim()
       if (value) (row as Record<string, string>)[auraField] = value
     }
-    return row
+
+    // Collect unmapped columns into metadata
+    const extra: Record<string, string> = {}
+    for (const col of allCsvColumns) {
+      if (mappedCsvColumns.has(col)) continue
+      const value = rawRow[col]?.trim()
+      if (value) extra[col] = value
+    }
+
+    return { ...row, _metadata: Object.keys(extra).length > 0 ? extra : undefined }
   })
 
   // Filter out rows without a name (required)
@@ -69,6 +82,8 @@ export async function POST(req: NextRequest) {
     company: r.company?.trim() || null,
     notes: r.notes?.trim() || null,
     birthday: r.birthday ? toISODate(r.birthday) : null,
+    metadata: (r as { _metadata?: Record<string, string> })._metadata ?? null,
+    source: "csv",
   }))
 
   // Bulk insert in batches of 100, upsert by (tenant_id, email)
