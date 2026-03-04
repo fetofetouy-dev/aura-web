@@ -1,0 +1,97 @@
+{
+  "campaigns": [
+    {
+      "campaign_id": "camp-1",
+      "campaign_name": "Search - Brand",
+      "platform": "google_ads",
+      "daily_data": [
+        {"date": "2026-02-01", "cost": 1200, "conversions": 35, "conversion_value": 10500, "impressions": 45000, "clicks": 2200, "target_roas": 8.0, "campaign_budget": 1500},
+        {"date": "2026-02-02", "cost": 1100, "conversions": 30, "conversion_value": 9000, "impressions": 40000, "clicks": 2000, "target_roas": 8.0, "campaign_budget": 1500},
+        {"date": "2026-02-03", "cost": 1300, "conversions": 40, "conversion_value": 12000, "impressions": 48000, "clicks": 2400, "target_roas": 8.0, "campaign_budget": 1500},
+        {"date": "2026-02-04", "cost": 1250, "conversions": 38, "conversion_value": 11400, "impressions": 47000, "clicks": 2350, "target_roas": 8.0, "campaign_budget": 1500},
+        {"date": "2026-02-05", "cost": 1180, "conversions": 32, "conversion_value": 9600, "impressions": 43000, "clicks": 2150, "target_roas": 8.0, "campaign_budget": 1500},
+        {"date": "2026-02-06", "cost": 900, "conversions": 25, "conversion_value": 7500, "impressions": 35000, "clicks": 1750, "target_roas": 8.0, "campaign_budget": 1500},
+        {"date": "2026-02-07", "cost": 850, "conversions": 22, "conversion_value": 6600, "impressions": 32000, "clicks": 1600, "target_roas": 8.0, "campaign_budget": 1500},
+        {"date": "2026-02-08", "cost": 1220, "conversions": 36, "conversion_value": 10800, "impressions": 46000, "clicks": 2300, "target_roas": 8.0, "campaign_budget": 1500},
+        {"date": "2026-02-09", "cost": 1150, "conversions": 33, "conversion_value": 9900, "impressions": 42000, "clicks": 2100, "target_roas": 8.0, "campaign_budget": 1500},
+        {"date": "2026-02-10", "cost": 1350, "conversions": 42, "conversion_value": 12600, "impressions": 50000, "clicks": 2500, "target_roas": 8.0, "campaign_budget": 1500},
+        {"date": "2026-02-11", "cost": 1280, "conversions": 39, "conversion_value": 11700, "impressions": 48000, "clicks": 2400, "target_roas": 8.0, "campaign_budget": 1500},
+        {"date": "2026-02-12", "cost": 1190, "conversions": 34, "conversion_value": 10200, "impressions": 44000, "clicks": 2200, "target_roas": 8.0, "campaign_budget": 1500},
+        {"date": "2026-02-13", "cost": 1050, "conversions": 28, "conversion_value": 8400, "impressions": 39000, "clicks": 1950, "target_roas": 8.0, "campaign_budget": 1500},
+        {"date": "2026-02-14", "cost": 920, "conversions": 24, "conversion_value": 7200, "impressions": 34000, "clicks": 1700, "target_roas": 8.0, "campaign_budget": 1500},
+        {"date": "2026-02-15", "cost": 1240, "conversions": 37, "conversion_value": 11100, "impressions": 46000, "clicks": 2300, "target_roas": 8.0, "campaign_budget": 1500},
+        {"date": "2026-02-16", "cost": 1160, "conversions": 33, "conversion_value": 9900, "impressions": 43000, "clicks": 2150, "target_roas": 8.0, "campaign_budget": 1500},
+        {"date": "2026-02-17", "cost": 1320, "conversions": 41, "conversion_value": 12300, "impressions": 49000, "clicks": 2450, "target_roas": 8.0, "campaign_budget": 1500},
+        {"date": "2026-02-18", "cost": 1270, "conversions": 38, "conversion_value": 11400, "impressions": 47000, "clicks": 2350, "target_roas": 8.0, "campaign_budget": 1500},
+        {"date": "2026-02-19", "cost": 1130, "conversions": 31, "conversion_value": 9300, "impressions": 42000, "clicks": 2100, "target_roas": 8.0, "campaign_budget": 1500},
+        {"date": "2026-02-20", "cost": 980, "conversions": 26, "conversion_value": 7800, "impressions": 37000, "clicks": 1850, "target_roas": 8.0, "campaign_budget": 1500}
+      ]
+    },
+    {
+      "campaign_id": "camp-2",
+      "campaign_name": "Shopping - Productos",
+      "platform": "google_ads",
+      "daily_data": [
+        {"date": "2026-02-01", "cost": 2500, "conversions": 55, "conversion_value": 22000, "impressions": 80000, "clicks": 4000, "target_roas": 7.5, "campaign_budget": 3000},
+        {"date": "2026-02-02", "cost": 2300, "conversions": 48, "conversion_value": 19200, "impressions": 72000, "clicks": 3600, "target_roas": 7.5, "campaign_budget": 3000},
+        {"date": "2026-02-03", "cost": 2700, "conversions": 62, "conversion_value": 24800, "impressions": 88000, "clicks": 4400, "target_roas": 7.5, "campaign_budget": 3000},
+        {"date": "2026-02-04", "cost": 2600, "conversions": 58, "conversion_value": 23200, "impressions": 85000, "clicks": 4250, "target_roas": 7.5, "campaign_budget": 3000},
+        {"date": "2026-02-05", "cost": 2400, "conversions": 50, "conversion_value": 20000, "impressions": 78000, "clicks": 3900, "target_roas": 7.5, "campaign_budget": 3000},
+        {"date": "2026-02-06", "cost": 1800, "conversions": 38, "conversion_value": 15200, "impressions": 60000, "clicks": 3000, "target_roas": 7.5, "campaign_budget": 3000},
+        {"date": "2026-02-07", "cost": 1700, "conversions": 35, "conversion_value": 14000, "impressions": 55000, "clicks": 2750, "target_roas": 7.5, "campaign_budget": 3000},
+        {"date": "2026-02-08", "cost": 2550, "conversions": 56, "conversion_value": 22400, "impressions": 82000, "clicks": 4100, "target_roas": 7.5, "campaign_budget": 3000},
+        {"date": "2026-02-09", "cost": 2350, "conversions": 49, "conversion_value": 19600, "impressions": 75000, "clicks": 3750, "target_roas": 7.5, "campaign_budget": 3000},
+        {"date": "2026-02-10", "cost": 2800, "conversions": 65, "conversion_value": 26000, "impressions": 92000, "clicks": 4600, "target_roas": 7.5, "campaign_budget": 3000},
+        {"date": "2026-02-11", "cost": 2650, "conversions": 60, "conversion_value": 24000, "impressions": 86000, "clicks": 4300, "target_roas": 7.5, "campaign_budget": 3000},
+        {"date": "2026-02-12", "cost": 2450, "conversions": 52, "conversion_value": 20800, "impressions": 79000, "clicks": 3950, "target_roas": 7.5, "campaign_budget": 3000},
+        {"date": "2026-02-13", "cost": 2100, "conversions": 43, "conversion_value": 17200, "impressions": 68000, "clicks": 3400, "target_roas": 7.5, "campaign_budget": 3000},
+        {"date": "2026-02-14", "cost": 1900, "conversions": 39, "conversion_value": 15600, "impressions": 62000, "clicks": 3100, "target_roas": 7.5, "campaign_budget": 3000},
+        {"date": "2026-02-15", "cost": 2520, "conversions": 55, "conversion_value": 22000, "impressions": 81000, "clicks": 4050, "target_roas": 7.5, "campaign_budget": 3000},
+        {"date": "2026-02-16", "cost": 2380, "conversions": 50, "conversion_value": 20000, "impressions": 76000, "clicks": 3800, "target_roas": 7.5, "campaign_budget": 3000},
+        {"date": "2026-02-17", "cost": 2720, "conversions": 63, "conversion_value": 25200, "impressions": 89000, "clicks": 4450, "target_roas": 7.5, "campaign_budget": 3000},
+        {"date": "2026-02-18", "cost": 2580, "conversions": 57, "conversion_value": 22800, "impressions": 84000, "clicks": 4200, "target_roas": 7.5, "campaign_budget": 3000},
+        {"date": "2026-02-19", "cost": 2280, "conversions": 47, "conversion_value": 18800, "impressions": 73000, "clicks": 3650, "target_roas": 7.5, "campaign_budget": 3000},
+        {"date": "2026-02-20", "cost": 2000, "conversions": 41, "conversion_value": 16400, "impressions": 65000, "clicks": 3250, "target_roas": 7.5, "campaign_budget": 3000}
+      ]
+    },
+    {
+      "campaign_id": "camp-3",
+      "campaign_name": "Conversiones - Remarketing",
+      "platform": "meta_ads",
+      "daily_data": [
+        {"date": "2026-02-01", "cost": 800, "conversions": 20, "conversion_value": 6000, "impressions": 30000, "clicks": 1200, "campaign_budget": 1000},
+        {"date": "2026-02-02", "cost": 750, "conversions": 18, "conversion_value": 5400, "impressions": 28000, "clicks": 1100, "campaign_budget": 1000},
+        {"date": "2026-02-03", "cost": 900, "conversions": 24, "conversion_value": 7200, "impressions": 34000, "clicks": 1400, "campaign_budget": 1000},
+        {"date": "2026-02-04", "cost": 850, "conversions": 22, "conversion_value": 6600, "impressions": 32000, "clicks": 1300, "campaign_budget": 1000},
+        {"date": "2026-02-05", "cost": 780, "conversions": 19, "conversion_value": 5700, "impressions": 29000, "clicks": 1150, "campaign_budget": 1000},
+        {"date": "2026-02-06", "cost": 600, "conversions": 14, "conversion_value": 4200, "impressions": 23000, "clicks": 900, "campaign_budget": 1000},
+        {"date": "2026-02-07", "cost": 550, "conversions": 12, "conversion_value": 3600, "impressions": 20000, "clicks": 800, "campaign_budget": 1000},
+        {"date": "2026-02-08", "cost": 820, "conversions": 21, "conversion_value": 6300, "impressions": 31000, "clicks": 1250, "campaign_budget": 1000},
+        {"date": "2026-02-09", "cost": 770, "conversions": 19, "conversion_value": 5700, "impressions": 29000, "clicks": 1150, "campaign_budget": 1000},
+        {"date": "2026-02-10", "cost": 950, "conversions": 26, "conversion_value": 7800, "impressions": 36000, "clicks": 1450, "campaign_budget": 1000},
+        {"date": "2026-02-11", "cost": 880, "conversions": 23, "conversion_value": 6900, "impressions": 33000, "clicks": 1350, "campaign_budget": 1000},
+        {"date": "2026-02-12", "cost": 790, "conversions": 19, "conversion_value": 5700, "impressions": 30000, "clicks": 1200, "campaign_budget": 1000},
+        {"date": "2026-02-13", "cost": 680, "conversions": 16, "conversion_value": 4800, "impressions": 26000, "clicks": 1050, "campaign_budget": 1000},
+        {"date": "2026-02-14", "cost": 620, "conversions": 14, "conversion_value": 4200, "impressions": 23000, "clicks": 920, "campaign_budget": 1000},
+        {"date": "2026-02-15", "cost": 830, "conversions": 21, "conversion_value": 6300, "impressions": 31000, "clicks": 1250, "campaign_budget": 1000},
+        {"date": "2026-02-16", "cost": 760, "conversions": 18, "conversion_value": 5400, "impressions": 28000, "clicks": 1120, "campaign_budget": 1000},
+        {"date": "2026-02-17", "cost": 910, "conversions": 25, "conversion_value": 7500, "impressions": 35000, "clicks": 1400, "campaign_budget": 1000},
+        {"date": "2026-02-18", "cost": 860, "conversions": 22, "conversion_value": 6600, "impressions": 33000, "clicks": 1320, "campaign_budget": 1000},
+        {"date": "2026-02-19", "cost": 740, "conversions": 17, "conversion_value": 5100, "impressions": 27000, "clicks": 1080, "campaign_budget": 1000},
+        {"date": "2026-02-20", "cost": 650, "conversions": 15, "conversion_value": 4500, "impressions": 24000, "clicks": 960, "campaign_budget": 1000}
+      ]
+    }
+  ],
+  "config": {
+    "total_budget": 5500,
+    "objective": "conversion_value",
+    "dataset_length": 60,
+    "minimum_dates": 15,
+    "max_change_pct": 0.35,
+    "error_dist": "student",
+    "sampling_method": "MEDIAN",
+    "harmonics": 2,
+    "trend_days": 7,
+    "lags": [1, 2, 7]
+  }
+}
