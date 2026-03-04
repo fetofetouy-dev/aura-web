@@ -48,4 +48,32 @@
   .glow-aura-hover:hover {
     box-shadow: 0 0 30px rgba(59, 130, 246, 0.5), 0 0 60px rgba(139, 92, 246, 0.3);
   }
+
+  /* Shimmer skeleton for loading states */
+  .skeleton-shimmer {
+    @apply rounded-lg bg-background-elevated relative overflow-hidden;
+  }
+  .skeleton-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.04) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  /* Input focus glow */
+  .input-aura {
+    @apply transition-all duration-200;
+  }
+  .input-aura:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+    border-color: #3b82f6;
+    outline: none;
+  }
 }

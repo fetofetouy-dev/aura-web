@@ -98,18 +98,26 @@ export async function sendGmail(
 }
 
 /**
- * Get upcoming calendar events.
+ * Get upcoming calendar events with attendee info.
  */
 export async function getCalendarEvents(
   accessToken: string,
-  { timeMin, timeMax }: { timeMin: string; timeMax: string }
-): Promise<{ id: string; summary: string; start: string; end: string }[]> {
+  { timeMin, timeMax, maxResults }: { timeMin: string; timeMax: string; maxResults?: number }
+): Promise<Array<{
+  id: string
+  summary: string
+  start: string
+  end: string
+  status: string
+  description: string | null
+  attendees: Array<{ email: string; displayName?: string; responseStatus?: string }>
+}>> {
   const params = new URLSearchParams({
     timeMin,
     timeMax,
     singleEvents: "true",
     orderBy: "startTime",
-    maxResults: "20",
+    maxResults: String(maxResults ?? 50),
   })
 
   const res = await fetch(
@@ -128,8 +136,16 @@ export async function getCalendarEvents(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (data.items ?? []).map((item: any) => ({
     id: item.id,
-    summary: item.summary,
+    summary: item.summary ?? "",
     start: item.start?.dateTime ?? item.start?.date,
     end: item.end?.dateTime ?? item.end?.date,
+    status: item.status ?? "confirmed",
+    description: item.description ?? null,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    attendees: (item.attendees ?? []).map((a: any) => ({
+      email: a.email,
+      displayName: a.displayName,
+      responseStatus: a.responseStatus,
+    })),
   }))
 }

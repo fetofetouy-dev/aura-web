@@ -38,6 +38,7 @@ def fit_bayesian(
     log_volume: np.ndarray,
     X_features: np.ndarray,
     error_dist: str = "student",
+    sampling_method: str = "MEDIAN",
 ) -> FitResult:
     """Fit Power Law GAM using PyMC5 MCMC sampling.
 
@@ -84,11 +85,23 @@ def fit_bayesian(
             return_inferencedata=True,
         )
 
-    # Extract posterior medians
-    w0_est = float(np.exp(np.median(trace.posterior["log_w0"].values)))
-    w1_est = float(np.median(trace.posterior["w1"].values))
-    wa_est = np.median(trace.posterior["wa"].values, axis=(0, 1))
+    # Extract posterior parameters
     w1_std = float(np.std(trace.posterior["w1"].values))
+
+    if sampling_method == "THOMPSON":
+        # Thompson Sampling: random draw from the posterior for exploration
+        flat_log_w0 = trace.posterior["log_w0"].values.flatten()
+        flat_w1 = trace.posterior["w1"].values.flatten()
+        flat_wa = trace.posterior["wa"].values.reshape(-1, n_features)
+        idx = np.random.randint(len(flat_log_w0))
+        w0_est = float(np.exp(flat_log_w0[idx]))
+        w1_est = float(flat_w1[idx])
+        wa_est = flat_wa[idx]
+    else:
+        # MEDIAN: posterior median (default, exploitation)
+        w0_est = float(np.exp(np.median(trace.posterior["log_w0"].values)))
+        w1_est = float(np.median(trace.posterior["w1"].values))
+        wa_est = np.median(trace.posterior["wa"].values, axis=(0, 1))
 
     # Compute R² and RMSE on training data
     predicted = np.log(w0_est) + w1_est * log_cost + X_features @ wa_est

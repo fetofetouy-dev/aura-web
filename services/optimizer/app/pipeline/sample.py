@@ -43,7 +43,8 @@ def fit_campaign(
     if error_dist == "student":
         try:
             result = fit_bayesian(
-                prep.log_cost, prep.log_volume, prep.X_features, error_dist="student"
+                prep.log_cost, prep.log_volume, prep.X_features,
+                error_dist="student", sampling_method=sampling_method,
             )
             logger.info(
                 f"Campaign {prep.campaign_id}: Bayesian Student-t fit "
@@ -58,7 +59,8 @@ def fit_campaign(
     # 2. Try Bayesian with Normal
     try:
         result = fit_bayesian(
-            prep.log_cost, prep.log_volume, prep.X_features, error_dist="normal"
+            prep.log_cost, prep.log_volume, prep.X_features,
+            error_dist="normal", sampling_method=sampling_method,
         )
         logger.info(
             f"Campaign {prep.campaign_id}: Bayesian Normal fit "

@@ -1,3 +1,7 @@
 export { leadToCrmFunction } from "./functions/lead-to-crm"
 export { birthdayReminderFunction } from "./functions/birthday-reminder"
 export { reactivationReminderFunction } from "./functions/reactivation-reminder"
+export { googleCalendarSyncFunction } from "./functions/google-calendar-sync"
+export { rfmScoringFunction } from "./functions/rfm-scoring"
+export { adsDataSyncFunction, adsManualSyncFunction } from "./functions/ads-data-sync"
+export { mediaOptimizerFunction } from "./functions/media-optimizer"

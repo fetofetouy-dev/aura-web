@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Bell, ChevronDown, LogOut } from "lucide-react"
+import { motion } from "framer-motion"
+import { Bell, ChevronDown, LogOut, Menu } from "lucide-react"
 import { createSupabaseBrowserClient } from "@/lib/supabase"
+import { useSidebar } from "./SidebarContext"
 import type { User } from "@supabase/supabase-js"
 
 interface DemoTopBarProps {
@@ -13,6 +15,7 @@ interface DemoTopBarProps {
 
 export function DemoTopBar({ title, subtitle }: DemoTopBarProps) {
   const router = useRouter()
+  const { toggle } = useSidebar()
   const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
@@ -35,17 +38,31 @@ export function DemoTopBar({ title, subtitle }: DemoTopBarProps) {
   }
 
   return (
-    <header className="h-14 border-b border-border bg-background-elevated flex items-center justify-between px-6 shrink-0">
-      <div>
-        <h1 className="text-sm font-semibold text-text-primary">{title}</h1>
-        {subtitle && <p className="text-xs text-text-muted">{subtitle}</p>}
+    <header className="h-14 border-b border-border bg-background-elevated flex items-center justify-between px-4 md:px-6 shrink-0">
+      <div className="flex items-center gap-3">
+        {/* Mobile hamburger */}
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          onClick={toggle}
+          className="p-2 rounded-lg hover:bg-white/5 transition-colors md:hidden"
+        >
+          <Menu className="w-5 h-5 text-text-muted" />
+        </motion.button>
+
+        <div>
+          <h1 className="text-sm font-semibold text-text-primary">{title}</h1>
+          {subtitle && <p className="text-xs text-text-muted">{subtitle}</p>}
+        </div>
       </div>
 
       <div className="flex items-center gap-3">
         {/* Notifications */}
-        <button className="relative p-2 rounded-lg hover:bg-white/5 transition-colors">
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          className="relative p-2 rounded-lg hover:bg-white/5 transition-colors"
+        >
           <Bell className="w-4 h-4 text-text-muted" />
-        </button>
+        </motion.button>
 
         {/* User */}
         <div className="flex items-center gap-2">

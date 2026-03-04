@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, use } from "react"
+import { useEffect, useState, useCallback, use } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import {
@@ -14,8 +14,18 @@ import {
   Clock,
   FileText,
   Loader2,
+  History,
+  Send,
+  CalendarCheck,
+  CalendarX,
+  UserPlus,
+  UserCheck,
+  CreditCard,
+  Star,
+  MessageCircle,
+  ChevronDown,
 } from "lucide-react"
-import type { Customer } from "@/lib/types"
+import type { Customer, TimelineEntry } from "@/lib/types"
 
 export default function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
@@ -26,6 +36,11 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
   const [editing, setEditing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+
+  // Timeline state
+  const [timeline, setTimeline] = useState<TimelineEntry[]>([])
+  const [timelineTotal, setTimelineTotal] = useState(0)
+  const [timelineLoading, setTimelineLoading] = useState(false)
 
   // Form state
   const [name, setName] = useState("")
@@ -53,6 +68,27 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
       .catch(() => setError("Cliente no encontrado"))
       .finally(() => setLoading(false))
   }, [id])
+
+  const fetchTimeline = useCallback(async (offset = 0) => {
+    setTimelineLoading(true)
+    try {
+      const res = await fetch(`/api/customers/${id}/timeline?limit=20&offset=${offset}`)
+      if (!res.ok) return
+      const data = await res.json()
+      if (offset === 0) {
+        setTimeline(data.entries)
+      } else {
+        setTimeline((prev) => [...prev, ...data.entries])
+      }
+      setTimelineTotal(data.total)
+    } finally {
+      setTimelineLoading(false)
+    }
+  }, [id])
+
+  useEffect(() => {
+    fetchTimeline()
+  }, [fetchTimeline])
 
   async function handleSave() {
     setError(null)
@@ -94,6 +130,80 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
 
   const inputClass = "w-full px-3 py-2.5 rounded-lg bg-background-elevated border border-border text-text-primary placeholder:text-text-muted text-sm focus:outline-none focus:border-accent-blue transition-colors"
   const readClass = "w-full px-3 py-2.5 rounded-lg bg-white/[0.02] border border-transparent text-text-primary text-sm"
+
+  function getTimelineIcon(type: string) {
+    const size = "w-3.5 h-3.5"
+    switch (type) {
+      case "customer_created": return <UserPlus className={size} />
+      case "customer_updated": return <UserCheck className={size} />
+      case "appointment_scheduled": return <CalendarCheck className={size} />
+      case "appointment_completed": return <CalendarCheck className={size} />
+      case "appointment_noshow": return <CalendarX className={size} />
+      case "email_sent": return <Send className={size} />
+      case "email_opened": return <Mail className={size} />
+      case "email_clicked": return <Mail className={size} />
+      case "payment_received": return <CreditCard className={size} />
+      case "whatsapp_sent": case "whatsapp_replied": return <MessageCircle className={size} />
+      case "nps_sent": case "nps_responded": return <Star className={size} />
+      case "review_requested": case "review_left": return <Star className={size} />
+      default: return <Clock className={size} />
+    }
+  }
+
+  function getTimelineIconStyle(type: string) {
+    switch (type) {
+      case "customer_created": return "bg-green-400/10 text-green-400"
+      case "appointment_scheduled": case "appointment_completed": return "bg-accent-blue/10 text-accent-blue"
+      case "appointment_noshow": return "bg-red-400/10 text-red-400"
+      case "email_sent": case "email_opened": case "email_clicked": return "bg-violet-400/10 text-violet-400"
+      case "payment_received": return "bg-emerald-400/10 text-emerald-400"
+      case "whatsapp_sent": case "whatsapp_replied": return "bg-green-400/10 text-green-400"
+      default: return "bg-white/5 text-text-muted"
+    }
+  }
+
+  function getTimelineLabel(type: string) {
+    const labels: Record<string, string> = {
+      customer_created: "Cliente creado",
+      customer_updated: "Datos actualizados",
+      appointment_scheduled: "Cita agendada",
+      appointment_completed: "Cita completada",
+      appointment_noshow: "No se presentó",
+      email_sent: "Email enviado",
+      email_opened: "Email abierto",
+      email_clicked: "Click en email",
+      payment_received: "Pago recibido",
+      invoice_sent: "Factura enviada",
+      invoice_overdue: "Factura vencida",
+      whatsapp_sent: "WhatsApp enviado",
+      whatsapp_replied: "Respuesta por WhatsApp",
+      nps_sent: "Encuesta NPS enviada",
+      nps_responded: "Respuesta NPS recibida",
+      review_requested: "Reseña solicitada",
+      review_left: "Reseña dejada",
+    }
+    return labels[type] || type
+  }
+
+  function getTimelineDetail(entry: TimelineEntry): string | null {
+    const meta = entry.metadata
+    if (!meta) return null
+    if (entry.type === "email_sent" && meta.automation) {
+      const names: Record<string, string> = {
+        "lead-to-crm": "Bienvenida",
+        "birthday-reminder": "Cumpleaños",
+        "reactivation-reminder": "Reactivación",
+      }
+      return `Automatización: ${names[meta.automation as string] || meta.automation}`
+    }
+    if (entry.type === "appointment_scheduled" && meta.title) {
+      return String(meta.title)
+    }
+    if (entry.type === "payment_received" && entry.value) {
+      return `$${entry.value.toLocaleString("es-AR")}`
+    }
+    return null
+  }
 
   if (loading) {
     return (
@@ -378,6 +488,79 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
           <span className="px-2.5 py-1 rounded-full bg-white/5 text-text-muted text-xs font-medium">
             {customer.status}
           </span>
+        )}
+      </div>
+
+      {/* Timeline */}
+      <div className="mt-6 bg-background-elevated border border-border rounded-xl p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <History className="w-4 h-4 text-text-muted" />
+          <h2 className="text-sm font-semibold text-text-muted uppercase tracking-wider">
+            Historial de actividad
+          </h2>
+          {timelineTotal > 0 && (
+            <span className="text-xs text-text-muted bg-white/5 px-2 py-0.5 rounded-full">
+              {timelineTotal}
+            </span>
+          )}
+        </div>
+
+        {timeline.length === 0 && !timelineLoading ? (
+          <p className="text-sm text-text-muted py-4 text-center">
+            Sin actividad registrada aún
+          </p>
+        ) : (
+          <div className="space-y-0">
+            {timeline.map((entry, i) => (
+              <div key={entry.id} className="flex gap-3 relative">
+                {/* Vertical line */}
+                {i < timeline.length - 1 && (
+                  <div className="absolute left-[13px] top-8 bottom-0 w-px bg-border" />
+                )}
+                {/* Icon */}
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${getTimelineIconStyle(entry.type)}`}>
+                  {getTimelineIcon(entry.type)}
+                </div>
+                {/* Content */}
+                <div className="flex-1 pb-4">
+                  <p className="text-sm text-text-primary font-medium">
+                    {getTimelineLabel(entry.type)}
+                  </p>
+                  {getTimelineDetail(entry) && (
+                    <p className="text-xs text-text-muted mt-0.5">
+                      {getTimelineDetail(entry)}
+                    </p>
+                  )}
+                  <p className="text-[11px] text-text-muted/60 mt-1">
+                    {new Date(entry.created_at).toLocaleDateString("es-AR", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {timeline.length < timelineTotal && (
+          <button
+            onClick={() => fetchTimeline(timeline.length)}
+            disabled={timelineLoading}
+            className="w-full mt-2 flex items-center justify-center gap-1.5 py-2 text-xs text-accent-blue hover:text-accent-blue/80 transition-colors"
+          >
+            {timelineLoading ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <>
+                <ChevronDown className="w-3.5 h-3.5" />
+                Ver más ({timelineTotal - timeline.length} restantes)
+              </>
+            )}
+          </button>
         )}
       </div>
     </div>

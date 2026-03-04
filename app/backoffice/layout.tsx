@@ -1,4 +1,8 @@
+"use client"
+
 import { DemoSidebar } from "@/components/demo/DemoSidebar"
+import { SidebarProvider } from "@/components/demo/SidebarContext"
+import { BackofficeShell } from "@/components/demo/BackofficeShell"
 
 export default function DemoLayout({
   children,
@@ -6,11 +10,11 @@ export default function DemoLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex min-h-screen bg-background">
-      <DemoSidebar />
-      <div className="flex-1 flex flex-col min-w-0">
-        {children}
+    <SidebarProvider>
+      <div className="flex min-h-screen bg-background">
+        <DemoSidebar />
+        <BackofficeShell>{children}</BackofficeShell>
       </div>
-    </div>
+    </SidebarProvider>
   )
 }

@@ -27,4 +27,17 @@ export type AuraEvents = {
   "cron/daily": {
     data: Record<string, never>
   }
+  "ads/sync.requested": {
+    data: {
+      tenantId: string
+      accountId?: string
+    }
+  }
+  "optimizer/run.requested": {
+    data: {
+      tenantId: string
+      totalBudget?: number
+      objective?: "conversion_value" | "conversions"
+    }
+  }
 }

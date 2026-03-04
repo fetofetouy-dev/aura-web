@@ -6,6 +6,7 @@ budget redistribution recommendations using Power Law GAM models.
 Endpoints:
   GET  /health    → Service health check
   POST /optimize  → Full optimization pipeline
+  POST /analyze   → Response curves + model diagnostics
   POST /translate → Standalone RLM budget → tROAS translation
 """
 
@@ -16,11 +17,19 @@ import numpy as np
 from fastapi import FastAPI, HTTPException
 
 from app.config import VERSION
+from app.models.power_law import predict
 from app.models.rlm import fit_rlm, translate_budget_to_troas
 from app.pipeline.optimize import optimize_budget
 from app.pipeline.preprocess import ExclusionResult, preprocess_all
 from app.pipeline.sample import fit_all
 from app.pipeline.translate import translate_solutions
+from app.schemas.analyze import (
+    AnalyzeRequest,
+    AnalyzeResponse,
+    CampaignCurve,
+    CurvePoint,
+    ExcludedCampaignInfo,
+)
 from app.schemas.request import OptimizeRequest, TranslateRequest
 from app.schemas.response import (
     CampaignParameters,
@@ -174,6 +183,137 @@ def optimize(request: OptimizeRequest):
     except Exception as e:
         logger.exception("Optimization failed")
         return OptimizeResponse(status="error", error=str(e))
+
+
+@app.post("/analyze", response_model=AnalyzeResponse)
+def analyze(request: AnalyzeRequest):
+    """Analyze campaigns: fit models and return response curves with confidence intervals.
+
+    Used for visualization of Power Law curves, model diagnostics, and
+    sensitivity analysis without running the full optimization.
+    """
+    try:
+        # Preprocess
+        preprocessed, excluded_preprocess = preprocess_all(
+            request.campaigns, request.config
+        )
+
+        if not preprocessed:
+            return AnalyzeResponse(
+                status="error",
+                error="No campaigns had sufficient data for analysis",
+                excluded=[
+                    ExcludedCampaignInfo(
+                        campaign_id=e.campaign_id,
+                        campaign_name=e.campaign_name,
+                        reason=e.reason,
+                    )
+                    for e in excluded_preprocess
+                ],
+            )
+
+        # Fit models
+        models, excluded_fit = fit_all(
+            preprocessed,
+            error_dist=request.config.error_dist,
+            sampling_method=request.config.sampling_method,
+        )
+
+        all_excluded = excluded_preprocess + excluded_fit
+
+        if not models:
+            return AnalyzeResponse(
+                status="error",
+                error="No campaigns could be modeled",
+                excluded=[
+                    ExcludedCampaignInfo(
+                        campaign_id=e.campaign_id,
+                        campaign_name=e.campaign_name,
+                        reason=e.reason,
+                    )
+                    for e in all_excluded
+                ],
+            )
+
+        # Generate curves for each campaign
+        curves: list[CampaignCurve] = []
+
+        for model in models:
+            # Determine budget range
+            if request.budget_range:
+                min_b = request.budget_range.min_budget
+                max_b = request.budget_range.max_budget
+                n_points = request.budget_range.points
+            else:
+                min_b = max(model.current_budget * 0.2, 1.0)
+                max_b = model.current_budget * 3.0
+                n_points = 50
+
+            costs = np.linspace(min_b, max_b, n_points)
+
+            # Generate curve points with confidence intervals
+            curve_points: list[CurvePoint] = []
+            w1_std = model.fit.posterior_w1_std
+
+            for cost_val in costs:
+                vol = float(predict(
+                    cost_val, model.latest_features,
+                    model.fit.w0, model.fit.w1, model.fit.wa,
+                ))
+
+                # Confidence interval from w1 uncertainty
+                if w1_std and w1_std > 0:
+                    vol_lower = float(predict(
+                        cost_val, model.latest_features,
+                        model.fit.w0, max(0.01, model.fit.w1 - 2 * w1_std), model.fit.wa,
+                    ))
+                    vol_upper = float(predict(
+                        cost_val, model.latest_features,
+                        model.fit.w0, min(0.99, model.fit.w1 + 2 * w1_std), model.fit.wa,
+                    ))
+                else:
+                    # No uncertainty info — use ±10% as rough band
+                    vol_lower = vol * 0.9
+                    vol_upper = vol * 1.1
+
+                curve_points.append(CurvePoint(
+                    cost=round(cost_val, 2),
+                    volume=round(vol, 2),
+                    volume_lower=round(min(vol_lower, vol_upper), 2),
+                    volume_upper=round(max(vol_lower, vol_upper), 2),
+                ))
+
+            curves.append(CampaignCurve(
+                campaign_id=model.campaign_id,
+                campaign_name=model.campaign_name,
+                platform=model.platform,
+                w0=round(model.fit.w0, 6),
+                w1=round(model.fit.w1, 6),
+                w1_std=round(w1_std, 6) if w1_std else None,
+                r_squared=round(model.fit.r_squared, 4),
+                rmse=round(model.fit.rmse, 4),
+                method=model.fit.method,
+                data_points=model.n_days,
+                current_budget=round(model.current_budget, 2),
+                curve=curve_points,
+            ))
+
+        return AnalyzeResponse(
+            status="success",
+            curves=curves,
+            excluded=[
+                ExcludedCampaignInfo(
+                    campaign_id=e.campaign_id,
+                    campaign_name=e.campaign_name,
+                    reason=e.reason,
+                )
+                for e in all_excluded
+            ] if all_excluded else None,
+        )
+
+    except Exception as e:
+        logger.exception("Analysis failed")
+        return AnalyzeResponse(status="error", error=str(e))
 
 
 @app.post("/translate", response_model=TranslateResponse)

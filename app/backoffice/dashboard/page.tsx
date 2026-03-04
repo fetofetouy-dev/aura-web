@@ -1,7 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import Link from "next/link"
+import { motion } from "framer-motion"
 import {
   Users,
   CalendarDays,
@@ -10,8 +11,16 @@ import {
   ArrowRight,
   Upload,
   Settings,
+  AlertTriangle,
+  TrendingDown,
+  ShieldCheck,
+  Eye,
+  X,
 } from "lucide-react"
 import { cn } from "@/lib/cn"
+import { segmentLabel, segmentColor } from "@/lib/rfm"
+import { listContainer, listItem } from "@/lib/animations"
+import type { CustomerSegment, CustomerAlert } from "@/lib/types"
 
 interface DashboardData {
   totalCustomers: number
@@ -25,6 +34,14 @@ interface DashboardData {
     createdAt: string
     durationMs: number | null
   }>
+}
+
+interface InsightsData {
+  segments: Record<CustomerSegment, number>
+  alerts: CustomerAlert[]
+  churnRate: number
+  retentionRate: number
+  totalCustomers: number
 }
 
 const automationLabels: Record<string, string> = {
@@ -44,17 +61,88 @@ function formatRelativeTime(dateStr: string) {
   return `Hace ${days}d`
 }
 
+function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: string }) {
+  const [display, setDisplay] = useState(0)
+  const ref = useRef<number | null>(null)
+
+  useEffect(() => {
+    const start = 0
+    const duration = 800
+    const startTime = performance.now()
+
+    function tick(now: number) {
+      const elapsed = now - startTime
+      const progress = Math.min(elapsed / duration, 1)
+      // ease-out quad
+      const eased = 1 - (1 - progress) * (1 - progress)
+      setDisplay(Math.round(start + (value - start) * eased))
+      if (progress < 1) {
+        ref.current = requestAnimationFrame(tick)
+      }
+    }
+
+    ref.current = requestAnimationFrame(tick)
+    return () => {
+      if (ref.current) cancelAnimationFrame(ref.current)
+    }
+  }, [value])
+
+  return (
+    <>
+      {display}
+      {suffix}
+    </>
+  )
+}
+
+function DashboardSkeleton() {
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="skeleton-shimmer h-24 rounded-xl" />
+        ))}
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="skeleton-shimmer h-64 rounded-xl" />
+        <div className="skeleton-shimmer h-64 rounded-xl" />
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="skeleton-shimmer h-48 rounded-xl" />
+        <div className="skeleton-shimmer h-48 rounded-xl" />
+      </div>
+    </div>
+  )
+}
+
 export default function DashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null)
+  const [insights, setInsights] = useState<InsightsData | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch("/api/dashboard")
-      .then((r) => r.json())
-      .then(setData)
+    Promise.all([
+      fetch("/api/dashboard").then((r) => r.json()),
+      fetch("/api/dashboard/insights").then((r) => r.json()),
+    ])
+      .then(([dashData, insightsData]) => {
+        setData(dashData)
+        setInsights(insightsData)
+      })
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
+
+  async function dismissAlert(alertId: string) {
+    await fetch("/api/alerts", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: alertId, status: "dismissed" }),
+    })
+    setInsights((prev) =>
+      prev ? { ...prev, alerts: prev.alerts.filter((a) => a.id !== alertId) } : prev
+    )
+  }
 
   return (
     <div className="flex-1 p-6 space-y-6">
@@ -66,18 +154,17 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      {loading && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-24 rounded-xl bg-white/5 animate-pulse" />
-          ))}
-        </div>
-      )}
+      {loading && <DashboardSkeleton />}
 
       {!loading && data && (
         <>
           {/* Stats */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <motion.div
+            variants={listContainer}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+          >
             {[
               {
                 label: "Clientes",
@@ -105,33 +192,153 @@ export default function DashboardPage() {
               },
               {
                 label: "Tasa de éxito",
-                value: `${data.successRate}%`,
+                value: data.successRate,
                 icon: CheckCircle,
                 color: "text-emerald-400",
                 bg: "bg-emerald-400/10",
                 href: "/backoffice/automations",
+                suffix: "%",
               },
             ].map((stat) => {
               const Icon = stat.icon
               return (
-                <Link
-                  key={stat.label}
-                  href={stat.href}
-                  className="bg-background-elevated border border-border rounded-xl p-4 hover:border-accent-blue/30 transition-colors"
-                >
-                  <div className={cn("p-2 rounded-lg w-fit mb-3", stat.bg)}>
-                    <Icon className={cn("w-4 h-4", stat.color)} />
-                  </div>
-                  <p className="text-2xl font-bold text-text-primary">{stat.value}</p>
-                  <p className="text-xs text-text-muted mt-0.5">{stat.label}</p>
-                </Link>
+                <motion.div key={stat.label} variants={listItem}>
+                  <Link
+                    href={stat.href}
+                    className="block bg-background-elevated border border-border rounded-xl p-4 hover:border-accent-blue/30 transition-colors"
+                  >
+                    <div className={cn("p-2 rounded-lg w-fit mb-3", stat.bg)}>
+                      <Icon className={cn("w-4 h-4", stat.color)} />
+                    </div>
+                    <p className="text-2xl font-bold text-text-primary">
+                      <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                    </p>
+                    <p className="text-xs text-text-muted mt-0.5">{stat.label}</p>
+                  </Link>
+                </motion.div>
               )
             })}
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Insights — Inteligencia de Clientes */}
+          {insights && insights.totalCustomers > 0 && (
+            <motion.div
+              variants={listContainer}
+              initial="hidden"
+              animate="visible"
+              className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+            >
+              {/* Segment Distribution */}
+              <motion.div variants={listItem} className="bg-background-elevated border border-border rounded-xl overflow-hidden">
+                <div className="flex items-center justify-between p-4 border-b border-border">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-accent-blue" />
+                    <h2 className="text-sm font-semibold text-text-primary">Segmentos de clientes</h2>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-text-muted">
+                    <TrendingDown className="w-3 h-3" />
+                    Retención {insights.retentionRate}%
+                  </div>
+                </div>
+                <div className="p-4 space-y-2">
+                  {(["champion", "loyal", "new", "at_risk", "dormant", "lost"] as CustomerSegment[]).map((seg) => {
+                    const count = insights.segments[seg] || 0
+                    if (count === 0) return null
+                    const pct = Math.round((count / insights.totalCustomers) * 100)
+                    return (
+                      <div key={seg} className="flex items-center gap-3">
+                        <span className={cn("text-xs font-medium px-2 py-0.5 rounded-full w-24 text-center", segmentColor(seg))}>
+                          {segmentLabel(seg)}
+                        </span>
+                        <div className="flex-1 h-2 rounded-full bg-white/5 overflow-hidden">
+                          <motion.div
+                            className={cn("h-full rounded-full", segmentColor(seg).split(" ")[0].replace("/10", "/40"))}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${Math.max(pct, 2)}%` }}
+                            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                          />
+                        </div>
+                        <span className="text-xs text-text-muted w-12 text-right">{count} ({pct}%)</span>
+                      </div>
+                    )
+                  })}
+                  {insights.totalCustomers > 0 && (insights.segments.unknown || 0) > 0 && (
+                    <p className="text-[11px] text-text-muted mt-2">
+                      {insights.segments.unknown} clientes sin datos suficientes para segmentar
+                    </p>
+                  )}
+                </div>
+              </motion.div>
+
+              {/* Alerts */}
+              <motion.div variants={listItem} className="bg-background-elevated border border-border rounded-xl overflow-hidden">
+                <div className="flex items-center justify-between p-4 border-b border-border">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-amber-400" />
+                    <h2 className="text-sm font-semibold text-text-primary">Alertas activas</h2>
+                  </div>
+                  {insights.alerts.length > 0 && (
+                    <span className="text-xs bg-amber-400/10 text-amber-400 px-2 py-0.5 rounded-full font-medium">
+                      {insights.alerts.length}
+                    </span>
+                  )}
+                </div>
+                {insights.alerts.length === 0 ? (
+                  <div className="p-8 text-center">
+                    <ShieldCheck className="w-6 h-6 text-green-400 mx-auto mb-2" />
+                    <p className="text-sm text-text-muted">Sin alertas pendientes</p>
+                    <p className="text-xs text-text-muted mt-1">
+                      Las alertas se generan cuando un cliente cambia de segmento o muestra riesgo de churn.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-border">
+                    {insights.alerts.map((alert) => (
+                      <div key={alert.id} className="flex items-start gap-3 p-4">
+                        <div className={cn(
+                          "w-2 h-2 rounded-full shrink-0 mt-1.5",
+                          alert.severity === "critical" ? "bg-red-400" :
+                          alert.severity === "high" ? "bg-amber-400" :
+                          "bg-yellow-400"
+                        )} />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-text-primary truncate">{alert.title}</p>
+                          {alert.suggested_action && (
+                            <p className="text-xs text-text-muted mt-0.5">{alert.suggested_action}</p>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1 shrink-0">
+                          {alert.customer && (
+                            <Link
+                              href={`/backoffice/customers/${alert.customer.id}`}
+                              className="p-1.5 rounded-lg text-text-muted hover:text-accent-blue hover:bg-accent-blue/10 transition-colors"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                            </Link>
+                          )}
+                          <button
+                            onClick={() => dismissAlert(alert.id)}
+                            className="p-1.5 rounded-lg text-text-muted hover:text-red-400 hover:bg-red-400/10 transition-colors"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </motion.div>
+            </motion.div>
+          )}
+
+          <motion.div
+            variants={listContainer}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+          >
             {/* Recent Executions */}
-            <div className="bg-background-elevated border border-border rounded-xl overflow-hidden">
+            <motion.div variants={listItem} className="bg-background-elevated border border-border rounded-xl overflow-hidden">
               <div className="flex items-center justify-between p-4 border-b border-border">
                 <h2 className="text-sm font-semibold text-text-primary">Ejecuciones recientes</h2>
                 <Link
@@ -193,10 +400,10 @@ export default function DashboardPage() {
                   ))}
                 </div>
               )}
-            </div>
+            </motion.div>
 
             {/* Quick actions */}
-            <div className="bg-background-elevated border border-border rounded-xl overflow-hidden">
+            <motion.div variants={listItem} className="bg-background-elevated border border-border rounded-xl overflow-hidden">
               <div className="p-4 border-b border-border">
                 <h2 className="text-sm font-semibold text-text-primary">Acciones rápidas</h2>
                 <p className="text-xs text-text-muted mt-0.5">Atajos a las funciones más usadas</p>
@@ -224,8 +431,8 @@ export default function DashboardPage() {
                   )
                 })}
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Info box */}
           <div className="p-4 rounded-xl border border-accent-blue/20 bg-accent-blue/5">

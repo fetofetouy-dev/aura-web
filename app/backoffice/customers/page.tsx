@@ -2,8 +2,21 @@
 
 import { useEffect, useState, useCallback } from "react"
 import Link from "next/link"
-import { Users, Plus, Upload, Mail, Phone, Building2, Trash2, ChevronRight, ChevronLeft } from "lucide-react"
-import type { Customer } from "@/lib/types"
+import { motion } from "framer-motion"
+import { Users, Plus, Upload, Mail, Phone, Building2, Trash2, ChevronRight, ChevronLeft, Filter } from "lucide-react"
+import { segmentLabel, segmentColor } from "@/lib/rfm"
+import { listContainer, listItem } from "@/lib/animations"
+import type { Customer, CustomerSegment } from "@/lib/types"
+
+const SEGMENT_OPTIONS: Array<{ value: CustomerSegment | "all"; label: string }> = [
+  { value: "all", label: "Todos" },
+  { value: "champion", label: "Champion" },
+  { value: "loyal", label: "Leal" },
+  { value: "new", label: "Nuevo" },
+  { value: "at_risk", label: "En riesgo" },
+  { value: "dormant", label: "Dormido" },
+  { value: "lost", label: "Perdido" },
+]
 
 const PAGE_SIZE = 50
 
@@ -13,6 +26,7 @@ export default function CustomersPage() {
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [segmentFilter, setSegmentFilter] = useState<CustomerSegment | "all">("all")
 
   const fetchCustomers = useCallback(async (p: number) => {
     setLoading(true)
@@ -39,6 +53,9 @@ export default function CustomersPage() {
   }
 
   const totalPages = Math.ceil(total / PAGE_SIZE)
+  const filteredCustomers = segmentFilter === "all"
+    ? customers
+    : customers.filter((c) => c.segment === segmentFilter)
 
   return (
     <div className="flex-1 p-6 space-y-6">
@@ -71,12 +88,50 @@ export default function CustomersPage() {
         </div>
       </div>
 
+      {/* Segment filter */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <Filter className="w-3.5 h-3.5 text-text-muted" />
+        {SEGMENT_OPTIONS.map((opt) => (
+          <button
+            key={opt.value}
+            onClick={() => { setSegmentFilter(opt.value); setPage(1) }}
+            className={`relative text-xs px-3 py-1.5 rounded-full border transition-colors ${
+              segmentFilter === opt.value
+                ? "border-accent-blue/50 text-accent-blue font-medium"
+                : "border-border text-text-muted hover:text-text-primary hover:border-border"
+            }`}
+          >
+            {segmentFilter === opt.value && (
+              <motion.div
+                layoutId="segment-filter"
+                className="absolute inset-0 bg-accent-blue/10 rounded-full"
+                transition={{ type: "spring", stiffness: 350, damping: 30 }}
+              />
+            )}
+            <span className="relative z-10">{opt.label}</span>
+          </button>
+        ))}
+      </div>
+
       {/* Loading */}
       {loading && (
         <div className="space-y-3">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-16 rounded-xl bg-white/5 animate-pulse" />
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="skeleton-shimmer h-16 rounded-xl" />
           ))}
+        </div>
+      )}
+
+      {/* No results for filter */}
+      {!loading && customers.length > 0 && filteredCustomers.length === 0 && (
+        <div className="py-12 text-center">
+          <p className="text-sm text-text-muted">No hay clientes con segmento &quot;{SEGMENT_OPTIONS.find((o) => o.value === segmentFilter)?.label}&quot;</p>
+          <button
+            onClick={() => setSegmentFilter("all")}
+            className="text-xs text-accent-blue hover:underline mt-2"
+          >
+            Ver todos
+          </button>
         </div>
       )}
 
@@ -101,11 +156,16 @@ export default function CustomersPage() {
       )}
 
       {/* Customer list */}
-      {!loading && customers.length > 0 && (
-        <div className="space-y-2">
-          {customers.map((customer) => (
+      {!loading && filteredCustomers.length > 0 && (
+        <motion.div
+          variants={listContainer}
+          initial="hidden"
+          animate="visible"
+          className="space-y-2"
+        >
+          {filteredCustomers.map((customer) => (
+            <motion.div key={customer.id} variants={listItem}>
             <Link
-              key={customer.id}
               href={`/backoffice/customers/${customer.id}`}
               className="flex items-center gap-4 p-4 rounded-xl bg-background-elevated border border-border hover:border-accent-blue/30 transition-colors group"
             >
@@ -138,6 +198,13 @@ export default function CustomersPage() {
                   )}
                 </div>
               </div>
+
+              {/* Segment badge */}
+              {customer.segment && customer.segment !== "unknown" && (
+                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full shrink-0 hidden sm:block ${segmentColor(customer.segment as CustomerSegment)}`}>
+                  {segmentLabel(customer.segment as CustomerSegment)}
+                </span>
+              )}
 
               {/* Source badge */}
               {customer.source && (
@@ -174,8 +241,9 @@ export default function CustomersPage() {
                 <ChevronRight className="w-4 h-4 text-text-muted" />
               </div>
             </Link>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
 
       {/* Pagination */}

@@ -93,3 +93,70 @@ export const pulse: Variants = {
     }
   }
 }
+
+// --- Backoffice Look & Feel variants ---
+
+// Spring config for snappy interactions
+export const springTransition = {
+  type: "spring" as const,
+  stiffness: 400,
+  damping: 30,
+}
+
+// Page transitions (AnimatePresence)
+export const pageVariants: Variants = {
+  initial: { opacity: 0, y: 12 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, ease: "easeOut" },
+  },
+  exit: {
+    opacity: 0,
+    y: -8,
+    transition: { duration: 0.15, ease: "easeIn" },
+  },
+}
+
+// Fast stagger for backoffice lists
+export const listContainer: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.06, delayChildren: 0.04 },
+  },
+}
+
+export const listItem: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.35, ease: "easeOut" },
+  },
+}
+
+// Sidebar drawer (mobile)
+export const drawerVariants: Variants = {
+  closed: { x: "-100%" },
+  open: {
+    x: 0,
+    transition: { type: "spring", stiffness: 350, damping: 35 },
+  },
+  exit: {
+    x: "-100%",
+    transition: { duration: 0.2, ease: "easeIn" },
+  },
+}
+
+export const backdropVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.2 } },
+  exit: { opacity: 0, transition: { duration: 0.15 } },
+}
+
+// Card hover micro-interaction
+export const cardHover = {
+  scale: 1.015,
+  transition: springTransition,
+}
