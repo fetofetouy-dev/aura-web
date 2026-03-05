@@ -2,7 +2,6 @@
 
 import { DemoSidebar } from "@/components/demo/DemoSidebar"
 import { SidebarProvider } from "@/components/demo/SidebarContext"
-import { BackofficeShell } from "@/components/demo/BackofficeShell"
 
 export default function DemoLayout({
   children,
@@ -13,7 +12,9 @@ export default function DemoLayout({
     <SidebarProvider>
       <div className="flex min-h-screen bg-background">
         <DemoSidebar />
-        <BackofficeShell>{children}</BackofficeShell>
+        <div className="flex-1 flex flex-col min-w-0">
+          {children}
+        </div>
       </div>
     </SidebarProvider>
   )
