@@ -12,7 +12,6 @@ import {
   Settings,
   ChevronRight,
 } from "lucide-react"
-import { DemoTopBar } from "@/components/demo/DemoTopBar"
 import { mockConversations, MockConversation, MessageSender } from "@/lib/mock-data/chat-bot"
 import { cn } from "@/lib/cn"
 
@@ -211,7 +210,6 @@ export default function AssistantPage() {
 
   return (
     <div className="flex-1 flex flex-col min-h-screen">
-      <DemoTopBar title="Bot IA" />
 
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top stats bar */}

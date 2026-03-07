@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { Plus, Star, CheckCircle2, Search } from "lucide-react"
-import { DemoTopBar } from "@/components/demo/DemoTopBar"
 import { mockTemplates, templateCategories, MockTemplate } from "@/lib/mock-data/templates"
 import { mockAutomations } from "@/lib/mock-data/automations"
 import { cn } from "@/lib/cn"
@@ -149,7 +148,6 @@ export default function MarketplacePage() {
 
   return (
     <div className="flex-1 flex flex-col min-h-screen">
-      <DemoTopBar title="Marketplace" />
 
       <main className="flex-1 p-6 space-y-6">
         {/* Header */}

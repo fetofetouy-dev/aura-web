@@ -15,7 +15,6 @@ import {
   ChevronDown,
   ChevronRight,
 } from "lucide-react"
-import { DemoTopBar } from "@/components/demo/DemoTopBar"
 import { mockAutomations } from "@/lib/mock-data/automations"
 import { getExecutionsByAutomation, MockExecution, ExecutionStep } from "@/lib/mock-data/executions"
 import { cn } from "@/lib/cn"
@@ -211,7 +210,6 @@ export default function AutomationDetailPage({ params }: { params: { id: string 
 
   return (
     <div className="flex-1 flex flex-col min-h-screen">
-      <DemoTopBar title={automation.name} />
 
       <main className="flex-1 p-6 space-y-6">
         {/* Back + header */}

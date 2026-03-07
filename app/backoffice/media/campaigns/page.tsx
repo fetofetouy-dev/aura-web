@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import { Search, Filter, Loader2, ArrowUpDown } from "lucide-react"
-import { DemoTopBar } from "@/components/demo/DemoTopBar"
 import { cn } from "@/lib/cn"
 import type { AdPlatform } from "@/lib/types"
 
@@ -105,7 +104,6 @@ export default function MediaCampaignsPage() {
 
   return (
     <div className="flex-1 flex flex-col min-h-screen">
-      <DemoTopBar title="Campañas" subtitle="Rendimiento de todas tus campañas publicitarias" />
 
       <main className="flex-1 p-6 space-y-4 overflow-auto">
         {/* Filters */}

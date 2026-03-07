@@ -11,7 +11,10 @@ export function ThemeToggle() {
   useEffect(() => {
     setMounted(true)
     const stored = localStorage.getItem("aura-theme")
-    if (stored === "dark" || (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+    if (stored === "light") {
+      setDark(false)
+      document.documentElement.classList.remove("dark")
+    } else {
       setDark(true)
       document.documentElement.classList.add("dark")
     }

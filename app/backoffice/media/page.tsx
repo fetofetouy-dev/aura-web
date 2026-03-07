@@ -13,7 +13,6 @@ import {
   AlertCircle,
   Loader2,
 } from "lucide-react"
-import { DemoTopBar } from "@/components/demo/DemoTopBar"
 import type { AdAccount, AdPlatform } from "@/lib/types"
 
 const platformLabels: Record<AdPlatform, string> = {
@@ -107,7 +106,6 @@ export default function MediaPage() {
 
   return (
     <div className="flex-1 flex flex-col min-h-screen">
-      <DemoTopBar title="Publicidad" subtitle="Gestión de campañas y optimización de presupuesto" />
 
       <main className="flex-1 p-6 space-y-6 overflow-auto">
         {/* Connection status cards */}

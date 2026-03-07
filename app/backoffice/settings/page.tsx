@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { createSupabaseBrowserClient } from "@/lib/supabase"
 import type { User } from "@supabase/supabase-js"
 import { CheckCircle2, XCircle, Loader2, Mail, Calendar, Key, Webhook, RefreshCw, Send, AlertCircle, Plus, Copy, Trash2, Check, CreditCard, MessageCircle, Camera } from "lucide-react"
-import { DemoTopBar } from "@/components/demo/DemoTopBar"
 import { cn } from "@/lib/cn"
 
 interface GoogleStatus { gmail: boolean; calendar: boolean }
@@ -174,7 +173,6 @@ export default function SettingsPage() {
 
   return (
     <div className="flex-1 flex flex-col min-h-screen">
-      <DemoTopBar title="Configuración" />
       <main className="flex-1 p-6 space-y-8 max-w-3xl">
         <div>
           <h1 className="font-serif text-2xl font-normal text-text-primary">Configuración</h1>

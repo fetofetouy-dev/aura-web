@@ -14,7 +14,6 @@ import {
   User,
   Tag,
 } from "lucide-react"
-import { DemoTopBar } from "@/components/demo/DemoTopBar"
 import { mockInboxMessages, MockInboxMessage, InboxChannel, InboxStatus } from "@/lib/mock-data/inbox-messages"
 import { cn } from "@/lib/cn"
 
@@ -263,7 +262,6 @@ export default function InboxPage() {
 
   return (
     <div className="flex-1 flex flex-col min-h-screen">
-      <DemoTopBar title="Centralizador Omnicanal" />
 
       <div className="flex-1 flex overflow-hidden">
         {/* Left panel: list */}

@@ -17,7 +17,6 @@ import {
   BarChart3,
   Activity,
 } from "lucide-react"
-import { DemoTopBar } from "@/components/demo/DemoTopBar"
 import { cn } from "@/lib/cn"
 import { listContainer, listItem } from "@/lib/animations"
 import { PowerLawChart } from "@/components/charts/PowerLawChart"
@@ -242,7 +241,6 @@ export default function MediaOptimizerPage() {
 
   return (
     <div className="flex-1 flex flex-col min-h-screen">
-      <DemoTopBar title="Optimizador" subtitle="Redistribuí tu presupuesto para maximizar conversiones" />
 
       <main className="flex-1 p-6 space-y-6 overflow-auto">
         {/* How it works */}

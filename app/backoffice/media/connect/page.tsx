@@ -8,7 +8,6 @@ import {
   Loader2,
   AlertCircle,
 } from "lucide-react"
-import { DemoTopBar } from "@/components/demo/DemoTopBar"
 import type { AdAccount, AdPlatform } from "@/lib/types"
 
 const platforms: Array<{
@@ -141,7 +140,6 @@ function MediaConnectContent() {
 
   return (
     <div className="flex-1 flex flex-col min-h-screen">
-      <DemoTopBar title="Conectar Cuentas" subtitle="Vincular plataformas de publicidad" />
 
       <main className="flex-1 p-6 space-y-6 overflow-auto">
         {/* Message */}
