@@ -303,7 +303,7 @@ export default function MediaOptimizerPage() {
                 <button
                   onClick={handleOptimize}
                   disabled={optimizing || loading}
-                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium bg-accent-blue text-white hover:bg-accent-blue/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium bg-accent-amber text-white hover:bg-accent-amber/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {optimizing ? (
                     <>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase-server"
 import { exchangeTikTokCode } from "@/lib/tiktok-ads-client"
+import { verifySignedState } from "@/lib/oauth-state"
 
 // GET: Handle TikTok OAuth callback
 export async function GET(req: NextRequest) {
@@ -14,15 +15,14 @@ export async function GET(req: NextRequest) {
     )
   }
 
-  let tenantId: string
-  try {
-    const decoded = JSON.parse(Buffer.from(state, "base64url").toString())
-    tenantId = decoded.tenantId
-  } catch {
+  // Verify signed state and extract tenant_id
+  const decoded = verifySignedState(state)
+  if (!decoded || !decoded.tenantId || typeof decoded.tenantId !== "string") {
     return NextResponse.redirect(
       new URL("/backoffice/media/connect?tiktok=error&reason=invalid_state", req.url)
     )
   }
+  const tenantId = decoded.tenantId
 
   try {
     const { accessToken, advertiserIds } = await exchangeTikTokCode(authCode)
@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
           provider: "tiktok_ads",
           access_token: accessToken,
           refresh_token: null,
-          token_expires_at: null, // TikTok tokens don't expire but can be revoked
+          token_expires_at: null,
           provider_metadata: { advertiser_ids: advertiserIds },
           is_active: true,
           updated_at: new Date().toISOString(),

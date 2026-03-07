@@ -73,7 +73,6 @@ function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: strin
     function tick(now: number) {
       const elapsed = now - startTime
       const progress = Math.min(elapsed / duration, 1)
-      // ease-out quad
       const eased = 1 - (1 - progress) * (1 - progress)
       setDisplay(Math.round(start + (value - start) * eased))
       if (progress < 1) {
@@ -148,9 +147,9 @@ export default function DashboardPage() {
     <div className="flex-1 p-6 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-semibold text-text-primary">Dashboard</h1>
+        <h1 className="font-serif text-2xl font-normal text-text-primary">Dashboard</h1>
         <p className="text-sm text-text-muted mt-0.5">
-          Resumen general de tu negocio en Aura. Acá ves el estado de tus clientes, citas próximas, y el rendimiento de tus automatizaciones en tiempo real.
+          Resumen general de tu negocio en Aura.
         </p>
       </div>
 
@@ -170,32 +169,24 @@ export default function DashboardPage() {
                 label: "Clientes",
                 value: data.totalCustomers,
                 icon: Users,
-                color: "text-accent-blue",
-                bg: "bg-accent-blue/10",
                 href: "/backoffice/customers",
               },
               {
                 label: "Citas próximas",
                 value: data.upcomingAppointments,
                 icon: CalendarDays,
-                color: "text-green-400",
-                bg: "bg-green-400/10",
                 href: "/backoffice/appointments",
               },
               {
                 label: "Ejecuciones totales",
                 value: data.totalExecutions,
                 icon: Zap,
-                color: "text-accent-violet",
-                bg: "bg-accent-violet/10",
                 href: "/backoffice/automations",
               },
               {
                 label: "Tasa de éxito",
                 value: data.successRate,
                 icon: CheckCircle,
-                color: "text-emerald-400",
-                bg: "bg-emerald-400/10",
                 href: "/backoffice/automations",
                 suffix: "%",
               },
@@ -205,10 +196,10 @@ export default function DashboardPage() {
                 <motion.div key={stat.label} variants={listItem}>
                   <Link
                     href={stat.href}
-                    className="block bg-background-elevated border border-border rounded-xl p-4 hover:border-accent-blue/30 transition-colors"
+                    className="block bg-background-elevated border border-border rounded-xl p-4 shadow-[var(--shadow-card)] hover:shadow-sm transition-shadow"
                   >
-                    <div className={cn("p-2 rounded-lg w-fit mb-3", stat.bg)}>
-                      <Icon className={cn("w-4 h-4", stat.color)} />
+                    <div className="p-2 rounded-lg w-fit mb-3 bg-accent-amber/10">
+                      <Icon className="w-4 h-4 text-accent-amber" />
                     </div>
                     <p className="text-2xl font-bold text-text-primary">
                       <AnimatedCounter value={stat.value} suffix={stat.suffix} />
@@ -229,10 +220,10 @@ export default function DashboardPage() {
               className="grid grid-cols-1 lg:grid-cols-2 gap-6"
             >
               {/* Segment Distribution */}
-              <motion.div variants={listItem} className="bg-background-elevated border border-border rounded-xl overflow-hidden">
+              <motion.div variants={listItem} className="bg-background-elevated border border-border rounded-xl overflow-hidden shadow-[var(--shadow-card)]">
                 <div className="flex items-center justify-between p-4 border-b border-border">
                   <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-accent-blue" />
+                    <ShieldCheck className="w-4 h-4 text-accent-amber" />
                     <h2 className="text-sm font-semibold text-text-primary">Segmentos de clientes</h2>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-text-muted">
@@ -250,9 +241,9 @@ export default function DashboardPage() {
                         <span className={cn("text-xs font-medium px-2 py-0.5 rounded-full w-24 text-center", segmentColor(seg))}>
                           {segmentLabel(seg)}
                         </span>
-                        <div className="flex-1 h-2 rounded-full bg-white/5 overflow-hidden">
+                        <div className="flex-1 h-2 rounded-full bg-surface-subtle overflow-hidden">
                           <motion.div
-                            className={cn("h-full rounded-full", segmentColor(seg).split(" ")[0].replace("/10", "/40"))}
+                            className="h-full rounded-full bg-accent-amber"
                             initial={{ width: 0 }}
                             animate={{ width: `${Math.max(pct, 2)}%` }}
                             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
@@ -271,21 +262,21 @@ export default function DashboardPage() {
               </motion.div>
 
               {/* Alerts */}
-              <motion.div variants={listItem} className="bg-background-elevated border border-border rounded-xl overflow-hidden">
+              <motion.div variants={listItem} className="bg-background-elevated border border-border rounded-xl overflow-hidden shadow-[var(--shadow-card)]">
                 <div className="flex items-center justify-between p-4 border-b border-border">
                   <div className="flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4 text-amber-400" />
+                    <AlertTriangle className="w-4 h-4 text-accent-amber" />
                     <h2 className="text-sm font-semibold text-text-primary">Alertas activas</h2>
                   </div>
                   {insights.alerts.length > 0 && (
-                    <span className="text-xs bg-amber-400/10 text-amber-400 px-2 py-0.5 rounded-full font-medium">
+                    <span className="text-xs bg-accent-amber/10 text-accent-amber px-2 py-0.5 rounded-full font-medium">
                       {insights.alerts.length}
                     </span>
                   )}
                 </div>
                 {insights.alerts.length === 0 ? (
                   <div className="p-8 text-center">
-                    <ShieldCheck className="w-6 h-6 text-green-400 mx-auto mb-2" />
+                    <ShieldCheck className="w-6 h-6 text-green-500 mx-auto mb-2" />
                     <p className="text-sm text-text-muted">Sin alertas pendientes</p>
                     <p className="text-xs text-text-muted mt-1">
                       Las alertas se generan cuando un cliente cambia de segmento o muestra riesgo de churn.
@@ -297,9 +288,9 @@ export default function DashboardPage() {
                       <div key={alert.id} className="flex items-start gap-3 p-4">
                         <div className={cn(
                           "w-2 h-2 rounded-full shrink-0 mt-1.5",
-                          alert.severity === "critical" ? "bg-red-400" :
-                          alert.severity === "high" ? "bg-amber-400" :
-                          "bg-yellow-400"
+                          alert.severity === "critical" ? "bg-red-500" :
+                          alert.severity === "high" ? "bg-accent-amber" :
+                          "bg-yellow-500"
                         )} />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-text-primary truncate">{alert.title}</p>
@@ -318,7 +309,7 @@ export default function DashboardPage() {
                           )}
                           <button
                             onClick={() => dismissAlert(alert.id)}
-                            className="p-1.5 rounded-lg text-text-muted hover:text-red-400 hover:bg-red-400/10 transition-colors"
+                            className="p-1.5 rounded-lg text-text-muted hover:text-red-500 hover:bg-red-500/10 transition-colors"
                           >
                             <X className="w-3.5 h-3.5" />
                           </button>
@@ -338,12 +329,12 @@ export default function DashboardPage() {
             className="grid grid-cols-1 lg:grid-cols-2 gap-6"
           >
             {/* Recent Executions */}
-            <motion.div variants={listItem} className="bg-background-elevated border border-border rounded-xl overflow-hidden">
+            <motion.div variants={listItem} className="bg-background-elevated border border-border rounded-xl overflow-hidden shadow-[var(--shadow-card)]">
               <div className="flex items-center justify-between p-4 border-b border-border">
                 <h2 className="text-sm font-semibold text-text-primary">Ejecuciones recientes</h2>
                 <Link
                   href="/backoffice/automations"
-                  className="flex items-center gap-1 text-xs text-accent-blue hover:text-accent-violet transition-colors"
+                  className="flex items-center gap-1 text-xs text-accent-blue hover:text-accent-blue/80 transition-colors"
                 >
                   Ver todas <ArrowRight className="w-3 h-3" />
                 </Link>
@@ -364,10 +355,10 @@ export default function DashboardPage() {
                         className={cn(
                           "w-2 h-2 rounded-full shrink-0",
                           exec.status === "success"
-                            ? "bg-green-400"
+                            ? "bg-green-500"
                             : exec.status === "failed"
-                            ? "bg-red-400"
-                            : "bg-yellow-400"
+                            ? "bg-red-500"
+                            : "bg-yellow-500"
                         )}
                       />
                       <div className="flex-1 min-w-0">
@@ -384,10 +375,10 @@ export default function DashboardPage() {
                           className={cn(
                             "text-xs font-medium px-2 py-0.5 rounded-full",
                             exec.status === "success"
-                              ? "bg-green-400/10 text-green-400"
+                              ? "bg-green-500/10 text-green-500"
                               : exec.status === "failed"
-                              ? "bg-red-400/10 text-red-400"
-                              : "bg-yellow-400/10 text-yellow-400"
+                              ? "bg-red-500/10 text-red-500"
+                              : "bg-yellow-500/10 text-yellow-500"
                           )}
                         >
                           {exec.status === "success" ? "Exitosa" : exec.status === "failed" ? "Fallida" : "Corriendo"}
@@ -403,17 +394,17 @@ export default function DashboardPage() {
             </motion.div>
 
             {/* Quick actions */}
-            <motion.div variants={listItem} className="bg-background-elevated border border-border rounded-xl overflow-hidden">
+            <motion.div variants={listItem} className="bg-background-elevated border border-border rounded-xl overflow-hidden shadow-[var(--shadow-card)]">
               <div className="p-4 border-b border-border">
                 <h2 className="text-sm font-semibold text-text-primary">Acciones rápidas</h2>
                 <p className="text-xs text-text-muted mt-0.5">Atajos a las funciones más usadas</p>
               </div>
               <div className="p-4 grid grid-cols-2 gap-3">
                 {[
-                  { href: "/backoffice/customers/import", label: "Importar CSV", icon: Upload, color: "border-accent-blue/30 hover:border-accent-blue/60 text-accent-blue" },
-                  { href: "/backoffice/appointments/new", label: "Agendar cita", icon: CalendarDays, color: "border-green-400/30 hover:border-green-400/60 text-green-400" },
-                  { href: "/backoffice/automations", label: "Ver automatizaciones", icon: Zap, color: "border-accent-violet/30 hover:border-accent-violet/60 text-accent-violet" },
-                  { href: "/backoffice/settings", label: "Configuración", icon: Settings, color: "border-yellow-400/30 hover:border-yellow-400/60 text-yellow-400" },
+                  { href: "/backoffice/customers/import", label: "Importar CSV", icon: Upload, color: "border-accent-blue/20 hover:border-accent-blue/40 text-accent-blue" },
+                  { href: "/backoffice/appointments/new", label: "Agendar cita", icon: CalendarDays, color: "border-green-200 hover:border-green-400 text-green-500" },
+                  { href: "/backoffice/automations", label: "Ver automatizaciones", icon: Zap, color: "border-accent-amber/20 hover:border-accent-amber/40 text-accent-amber" },
+                  { href: "/backoffice/settings", label: "Configuración", icon: Settings, color: "border-border hover:border-text-muted text-text-muted" },
                 ].map((action) => {
                   const Icon = action.icon
                   return (
@@ -421,7 +412,7 @@ export default function DashboardPage() {
                       key={action.href}
                       href={action.href}
                       className={cn(
-                        "flex items-center gap-2 p-3 rounded-lg border bg-background-elevated text-xs font-medium transition-all duration-150",
+                        "flex items-center gap-2 p-3 rounded-lg border bg-background text-xs font-medium transition-all duration-150",
                         action.color
                       )}
                     >

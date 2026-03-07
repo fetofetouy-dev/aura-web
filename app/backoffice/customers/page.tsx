@@ -62,7 +62,7 @@ export default function CustomersPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-text-primary">Clientes</h1>
+          <h1 className="font-serif text-2xl font-normal text-text-primary">Clientes</h1>
           <p className="text-sm text-text-muted mt-0.5">
             Vista de los datos que Aura usa para ejecutar automatizaciones. Los datos se importan desde tu sistema, CSV o webhook.
           </p>
@@ -73,14 +73,14 @@ export default function CustomersPage() {
         <div className="flex items-center gap-2">
           <Link
             href="/backoffice/customers/import"
-            className="flex items-center gap-2 px-4 py-2 border border-border hover:border-accent-blue/40 text-text-muted hover:text-text-primary text-sm font-medium rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 border border-border hover:border-accent-amber/40 text-text-muted hover:text-text-primary text-sm font-medium rounded-lg transition-colors"
           >
             <Upload className="w-4 h-4" />
             Importar CSV
           </Link>
           <Link
             href="/backoffice/customers/new"
-            className="flex items-center gap-2 px-4 py-2 bg-accent-blue hover:bg-accent-blue/90 text-white text-sm font-medium rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-accent-amber hover:bg-accent-amber/90 text-white text-sm font-medium rounded-lg transition-colors"
           >
             <Plus className="w-4 h-4" />
             Nuevo cliente
@@ -97,14 +97,14 @@ export default function CustomersPage() {
             onClick={() => { setSegmentFilter(opt.value); setPage(1) }}
             className={`relative text-xs px-3 py-1.5 rounded-full border transition-colors ${
               segmentFilter === opt.value
-                ? "border-accent-blue/50 text-accent-blue font-medium"
+                ? "border-accent-amber/50 text-accent-amber font-medium"
                 : "border-border text-text-muted hover:text-text-primary hover:border-border"
             }`}
           >
             {segmentFilter === opt.value && (
               <motion.div
                 layoutId="segment-filter"
-                className="absolute inset-0 bg-accent-blue/10 rounded-full"
+                className="absolute inset-0 bg-accent-amber/10 rounded-full"
                 transition={{ type: "spring", stiffness: 350, damping: 30 }}
               />
             )}
@@ -128,7 +128,7 @@ export default function CustomersPage() {
           <p className="text-sm text-text-muted">No hay clientes con segmento &quot;{SEGMENT_OPTIONS.find((o) => o.value === segmentFilter)?.label}&quot;</p>
           <button
             onClick={() => setSegmentFilter("all")}
-            className="text-xs text-accent-blue hover:underline mt-2"
+            className="text-xs text-accent-amber hover:underline mt-2"
           >
             Ver todos
           </button>
@@ -138,7 +138,7 @@ export default function CustomersPage() {
       {/* Empty state */}
       {!loading && customers.length === 0 && page === 1 && (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-4">
+          <div className="w-12 h-12 rounded-full bg-surface-subtle flex items-center justify-center mb-4">
             <Users className="w-6 h-6 text-text-muted" />
           </div>
           <p className="text-text-primary font-medium mb-1">Todavía no tenés clientes</p>
@@ -167,10 +167,10 @@ export default function CustomersPage() {
             <motion.div key={customer.id} variants={listItem}>
             <Link
               href={`/backoffice/customers/${customer.id}`}
-              className="flex items-center gap-4 p-4 rounded-xl bg-background-elevated border border-border hover:border-accent-blue/30 transition-colors group"
+              className="flex items-center gap-4 p-4 rounded-xl bg-background-elevated border border-border shadow-[var(--shadow-card)] hover:shadow-sm transition-shadow group"
             >
               {/* Avatar */}
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-accent-blue/20 to-accent-violet/20 flex items-center justify-center text-sm font-semibold text-accent-blue shrink-0">
+              <div className="w-9 h-9 rounded-full bg-accent-amber/15 flex items-center justify-center text-sm font-semibold text-accent-amber shrink-0">
                 {customer.name[0]?.toUpperCase()}
               </div>
 
@@ -211,7 +211,7 @@ export default function CustomersPage() {
                 <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full shrink-0 hidden sm:block ${
                   customer.source === "csv" ? "bg-amber-400/10 text-amber-400" :
                   customer.source?.startsWith("webhook:") ? "bg-violet-400/10 text-violet-400" :
-                  "bg-white/5 text-text-muted"
+                  "bg-surface-subtle text-text-muted"
                 }`}>
                   {customer.source === "manual" ? "Manual" :
                    customer.source === "csv" ? "CSV" :

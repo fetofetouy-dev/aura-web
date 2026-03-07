@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import Image from "next/image"
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
@@ -58,14 +57,14 @@ function NavLink({
       className={cn(
         "relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150",
         isActive
-          ? "text-accent-blue font-medium"
-          : "text-text-muted hover:text-text-primary hover:bg-white/5"
+          ? "text-text-primary font-medium"
+          : "text-text-muted hover:text-text-primary hover:bg-surface-hover"
       )}
     >
       {isActive && (
         <motion.div
           layoutId="nav-indicator"
-          className="absolute inset-0 bg-accent-blue/10 rounded-lg"
+          className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 bg-accent-amber rounded-r-full"
           transition={{ type: "spring", stiffness: 350, damping: 30 }}
         />
       )}
@@ -109,20 +108,14 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       {/* Logo */}
       <div className="p-5 border-b border-border">
         <Link href="/" onClick={onNavigate}>
-          <Image
-            src="/aura-logo.png"
-            alt="Aura"
-            width={100}
-            height={30}
-            className="brightness-200"
-          />
+          <span className="font-serif text-xl text-text-primary">aura</span>
         </Link>
         <div className="mt-3 flex items-center gap-2">
           {image ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={image} alt={name} className="w-7 h-7 rounded-full" />
           ) : (
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-accent-blue to-accent-violet flex items-center justify-center text-xs font-bold text-white">
+            <div className="w-7 h-7 rounded-full bg-accent-amber/20 flex items-center justify-center text-xs font-bold text-accent-amber">
               {initial}
             </div>
           )}
@@ -166,21 +159,21 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         })}
 
         {/* Upgrade CTA */}
-        <div className="mt-2 p-3 rounded-lg bg-gradient-to-br from-accent-blue/10 to-accent-violet/10 border border-accent-blue/20">
+        <div className="mt-2 p-3 rounded-lg bg-accent-amber/5 border border-accent-amber/15">
           <p className="text-xs font-semibold text-text-primary mb-1">
             Plan Enterprise
           </p>
           <p className="text-xs text-text-muted mb-2">
             Automatizaciones ilimitadas
           </p>
-          <button className="w-full flex items-center justify-center gap-1 text-xs font-medium text-accent-blue hover:text-accent-violet transition-colors">
+          <button className="w-full flex items-center justify-center gap-1 text-xs font-medium text-accent-amber hover:text-accent-amber/80 transition-colors">
             Upgrade <ArrowUpRight className="w-3 h-3" />
           </button>
         </div>
 
         <button
           onClick={handleSignOut}
-          className="w-full text-left px-3 py-2 text-xs text-text-muted hover:text-red-400 transition-colors rounded-lg hover:bg-red-400/5"
+          className="w-full text-left px-3 py-2 text-xs text-text-muted hover:text-red-500 transition-colors rounded-lg hover:bg-red-500/10"
         >
           Cerrar sesión
         </button>
@@ -201,7 +194,7 @@ export function DemoSidebar() {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex w-64 min-h-screen bg-background-elevated border-r border-border flex-col shrink-0">
+      <aside className="hidden md:flex w-64 min-h-screen bg-surface-subtle border-r border-border flex-col shrink-0">
         <SidebarContent />
       </aside>
 
@@ -216,7 +209,7 @@ export function DemoSidebar() {
               animate="visible"
               exit="exit"
               onClick={close}
-              className="fixed inset-0 bg-black/60 z-40 md:hidden"
+              className="fixed inset-0 bg-black/40 z-40 md:hidden"
             />
             <motion.aside
               key="drawer"
@@ -224,7 +217,7 @@ export function DemoSidebar() {
               initial="closed"
               animate="open"
               exit="exit"
-              className="fixed inset-y-0 left-0 w-64 bg-background-elevated border-r border-border flex flex-col z-50 md:hidden"
+              className="fixed inset-y-0 left-0 w-64 bg-surface-subtle border-r border-border flex flex-col z-50 md:hidden"
             >
               <button
                 onClick={close}

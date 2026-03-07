@@ -65,12 +65,12 @@ export default function NewAppointmentPage() {
       <div className="flex items-center gap-3 mb-6">
         <Link
           href="/backoffice/appointments"
-          className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-white/5 transition-colors"
+          className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-hover transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
         </Link>
         <div>
-          <h1 className="text-xl font-semibold text-text-primary">Nueva cita</h1>
+          <h1 className="font-serif text-2xl font-normal text-text-primary">Nueva cita</h1>
           <p className="text-sm text-text-muted mt-0.5">Agendá una cita para un cliente</p>
         </div>
       </div>
@@ -176,7 +176,7 @@ export default function NewAppointmentPage() {
           <button
             type="submit"
             disabled={saving}
-            className="flex-1 py-2.5 bg-accent-blue hover:bg-accent-blue/90 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
+            className="flex-1 py-2.5 bg-accent-amber hover:bg-accent-amber/90 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
           >
             {saving ? "Guardando..." : "Agendar cita"}
           </button>

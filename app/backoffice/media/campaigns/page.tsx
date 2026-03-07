@@ -173,7 +173,7 @@ export default function MediaCampaignsPage() {
                 </thead>
                 <tbody>
                   {filtered.map((c) => (
-                    <tr key={c.id} className="border-b border-border/50 hover:bg-white/[0.02] transition-colors">
+                    <tr key={c.id} className="border-b border-border/50 hover:bg-surface-hover transition-colors">
                       <td className="px-4 py-3">
                         <p className="text-sm text-text-primary font-medium">{c.name}</p>
                         {c.campaign_type && (
@@ -263,7 +263,7 @@ function StatusBadge({ status }: { status: string }) {
     removed: "Eliminada",
   }
   return (
-    <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", styles[status] ?? "bg-white/5 text-text-muted")}>
+    <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", styles[status] ?? "bg-surface-subtle text-text-muted")}>
       {labels[status] ?? status}
     </span>
   )

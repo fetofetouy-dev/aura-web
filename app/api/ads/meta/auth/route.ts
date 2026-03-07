@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireAuth } from "@/lib/api-auth"
+import { createSignedState } from "@/lib/oauth-state"
 
 // GET: Redirect to Facebook Login for Meta Ads OAuth
 export async function GET(req: NextRequest) {
@@ -14,8 +15,7 @@ export async function GET(req: NextRequest) {
   const origin = new URL(req.url).origin
   const redirectUri = `${origin}/api/ads/meta/callback`
 
-  // Encode tenant_id in state for security
-  const state = Buffer.from(JSON.stringify({ tenantId: user.id })).toString("base64url")
+  const state = createSignedState({ tenantId: user.id, ts: Date.now() })
 
   const authUrl =
     `https://www.facebook.com/v19.0/dialog/oauth?` +

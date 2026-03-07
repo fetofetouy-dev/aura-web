@@ -63,11 +63,11 @@ function ConversationRow({
     <button
       onClick={onClick}
       className={cn(
-        "w-full text-left flex items-start gap-3 p-3 border-b border-border hover:bg-white/[0.02] transition-colors",
+        "w-full text-left flex items-start gap-3 p-3 border-b border-border hover:bg-surface-hover transition-colors",
         isSelected && "bg-accent-blue/5 border-l-2 border-l-accent-blue"
       )}
     >
-      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-accent-blue to-accent-violet flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5">
+      <div className="w-8 h-8 rounded-full bg-accent-amber/20 flex items-center justify-center text-accent-amber text-xs font-bold shrink-0 mt-0.5">
         {conv.leadName[0]}
       </div>
       <div className="flex-1 min-w-0">
@@ -100,7 +100,7 @@ function ConversationDetail({ conv }: { conv: MockConversation }) {
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-blue to-accent-violet flex items-center justify-center text-white font-bold">
+            <div className="w-10 h-10 rounded-full bg-accent-amber/20 flex items-center justify-center text-accent-amber font-bold">
               {conv.leadName[0]}
             </div>
             <div>
@@ -165,7 +165,7 @@ function ConversationDetail({ conv }: { conv: MockConversation }) {
           return (
             <div key={msg.id} className={cn("flex gap-2", cfg.align)}>
               {msg.sender === "lead" && (
-                <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center shrink-0 mt-1">
+                <div className="w-6 h-6 rounded-full bg-surface-subtle flex items-center justify-center shrink-0 mt-1">
                   <User className="w-3.5 h-3.5 text-text-muted" />
                 </div>
               )}

@@ -25,7 +25,7 @@ const channelConfig: Record<
   { label: string; icon: React.ComponentType<{ className?: string }>; color: string; bg: string }
 > = {
   whatsapp: { label: "WhatsApp", icon: MessageCircle, color: "text-green-400", bg: "bg-green-400/10" },
-  instagram: { label: "Instagram", icon: MessageCircle, color: "text-accent-violet", bg: "bg-accent-violet/10" },
+  instagram: { label: "Instagram", icon: MessageCircle, color: "text-accent-amber", bg: "bg-accent-amber/10" },
   email: { label: "Email", icon: Mail, color: "text-accent-blue", bg: "bg-accent-blue/10" },
   facebook: { label: "Facebook", icon: MessageCircle, color: "text-blue-400", bg: "bg-blue-400/10" },
   phone: { label: "Teléfono", icon: Phone, color: "text-yellow-400", bg: "bg-yellow-400/10" },
@@ -74,9 +74,9 @@ function MessageRow({
     <button
       onClick={onClick}
       className={cn(
-        "w-full text-left flex items-start gap-3 p-3 border-b border-border hover:bg-white/[0.02] transition-colors",
+        "w-full text-left flex items-start gap-3 p-3 border-b border-border hover:bg-surface-hover transition-colors",
         isSelected && "bg-accent-blue/5 border-l-2 border-l-accent-blue",
-        message.status === "unread" && !isSelected && "bg-white/[0.01]"
+        message.status === "unread" && !isSelected && "bg-black/[0.01]"
       )}
     >
       {/* Channel icon */}
@@ -187,7 +187,7 @@ function MessageDetail({ message }: { message: MockInboxMessage }) {
           <div className="flex items-center gap-2 mt-4">
             <Tag className="w-3.5 h-3.5 text-text-muted" />
             {message.tags.map((tag) => (
-              <span key={tag} className="text-xs bg-white/5 border border-border px-2 py-0.5 rounded-full text-text-muted">
+              <span key={tag} className="text-xs bg-surface-subtle border border-border px-2 py-0.5 rounded-full text-text-muted">
                 #{tag}
               </span>
             ))}
@@ -230,7 +230,7 @@ function MessageDetail({ message }: { message: MockInboxMessage }) {
             />
             <button
               disabled={!reply.trim()}
-              className="flex items-center gap-1.5 bg-accent-blue text-white text-sm px-4 py-2 rounded-xl hover:bg-accent-blue/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-1.5 bg-accent-amber text-white text-sm px-4 py-2 rounded-xl hover:bg-accent-amber/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               <Send className="w-3.5 h-3.5" />
               Enviar
@@ -283,7 +283,7 @@ export default function InboxPage() {
                   "flex items-center gap-1 text-xs px-2.5 py-1 rounded-full transition-colors",
                   activeFilter === filter.key
                     ? "bg-accent-blue text-white"
-                    : "text-text-muted hover:text-text-primary bg-white/5"
+                    : "text-text-muted hover:text-text-primary bg-surface-subtle"
                 )}
               >
                 {filter.label}

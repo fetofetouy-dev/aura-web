@@ -201,7 +201,7 @@ export default function MediaPage() {
             </button>
             <Link
               href="/backoffice/media/campaigns"
-              className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg text-text-muted hover:text-text-primary hover:bg-white/5 transition-colors"
+              className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-hover transition-colors"
             >
               Ver todas <ArrowRight className="w-3 h-3" />
             </Link>
@@ -220,7 +220,7 @@ export default function MediaPage() {
             <p className="text-xs text-text-muted mb-4">Conectá tu cuenta de Google Ads, Meta o TikTok para empezar.</p>
             <Link
               href="/backoffice/media/connect"
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-accent-blue hover:bg-accent-blue/90 text-white transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-accent-amber hover:bg-accent-amber/90 text-white transition-colors"
             >
               Conectar cuenta
             </Link>
@@ -239,7 +239,7 @@ export default function MediaPage() {
               </thead>
               <tbody>
                 {topCampaigns.map((c) => (
-                  <tr key={c.id} className="border-b border-border/50 hover:bg-white/[0.02] transition-colors">
+                  <tr key={c.id} className="border-b border-border/50 hover:bg-surface-hover transition-colors">
                     <td className="px-5 py-3">
                       <p className="text-sm text-text-primary">{c.name}</p>
                     </td>
@@ -265,7 +265,7 @@ export default function MediaPage() {
         )}
 
         {/* Optimizer CTA */}
-        <div className="bg-gradient-to-r from-accent-blue/5 to-accent-violet/5 border border-accent-blue/20 rounded-xl p-6">
+        <div className="bg-gradient-to-r from-accent-amber/5 to-accent-amber/10 border border-accent-amber/20 rounded-xl p-6">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-sm font-semibold text-text-primary mb-1">Optimizador de Presupuesto</h3>
@@ -275,7 +275,7 @@ export default function MediaPage() {
             </div>
             <Link
               href="/backoffice/media/optimizer"
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-accent-blue hover:bg-accent-blue/90 text-white transition-colors shrink-0"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-accent-amber hover:bg-accent-amber/90 text-white transition-colors shrink-0"
             >
               <TrendingUp className="w-4 h-4" /> Optimizar
             </Link>

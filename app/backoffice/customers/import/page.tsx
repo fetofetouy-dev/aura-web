@@ -126,12 +126,12 @@ export default function ImportCustomersPage() {
       <div className="flex items-center gap-3 mb-6">
         <Link
           href="/backoffice/customers"
-          className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-white/5 transition-colors"
+          className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-hover transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
         </Link>
         <div>
-          <h1 className="text-xl font-semibold text-text-primary">Importar clientes</h1>
+          <h1 className="font-serif text-2xl font-normal text-text-primary">Importar clientes</h1>
           <p className="text-sm text-text-muted mt-0.5">Cargá tu base de clientes desde un archivo CSV o Excel exportado</p>
         </div>
       </div>
@@ -269,7 +269,7 @@ export default function ImportCustomersPage() {
             <button
               onClick={handleImport}
               disabled={!nameIsMapped}
-              className="flex-1 py-2.5 bg-accent-blue hover:bg-accent-blue/90 disabled:opacity-40 text-white text-sm font-medium rounded-lg transition-colors"
+              className="flex-1 py-2.5 bg-accent-amber hover:bg-accent-amber/90 disabled:opacity-40 text-white text-sm font-medium rounded-lg transition-colors"
             >
               Importar {allRows.length} clientes
             </button>
@@ -317,7 +317,7 @@ export default function ImportCustomersPage() {
           </div>
           <Link
             href="/backoffice/customers"
-            className="px-6 py-2.5 bg-accent-blue hover:bg-accent-blue/90 text-white text-sm font-medium rounded-lg transition-colors"
+            className="px-6 py-2.5 bg-accent-amber hover:bg-accent-amber/90 text-white text-sm font-medium rounded-lg transition-colors"
           >
             Ver clientes
           </Link>

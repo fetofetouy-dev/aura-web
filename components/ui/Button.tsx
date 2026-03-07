@@ -24,8 +24,8 @@ export function Button({
   onClick,
 }: ButtonProps) {
   const variants = {
-    primary: "bg-gradient-aura text-white glow-aura-hover",
-    secondary: "border-2 border-accent-blue text-text-primary hover:bg-accent-blue/10",
+    primary: "bg-accent-amber text-white",
+    secondary: "border-2 border-accent-amber text-text-primary hover:bg-accent-amber/10",
   }
 
   const sizes = {

@@ -3,8 +3,38 @@
 @tailwind utilities;
 
 @layer base {
+  /* Light theme (default) */
   :root {
-    --font-inter: "Inter", system-ui, sans-serif;
+    --bg: #FAF9F7;
+    --bg-elevated: #FFFFFF;
+    --border: #e8e5e1;
+    --text-primary: #1a1917;
+    --text-body: #4a4843;
+    --text-muted: #a09d96;
+    --accent-amber: #C4853A;
+    --accent-blue: #3B82F6;
+    --surface-subtle: #f0ede8;
+    --surface-hover: rgba(0, 0, 0, 0.03);
+    --shimmer-bg: #f0ede8;
+    --shimmer-shine: rgba(255, 255, 255, 0.5);
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Dark theme */
+  .dark {
+    --bg: #0f0f0e;
+    --bg-elevated: #1c1b19;
+    --border: #252420;
+    --text-primary: #ede9e3;
+    --text-body: #b5b0a7;
+    --text-muted: #6b6760;
+    --accent-amber: #E5A946;
+    --accent-blue: #60A5FA;
+    --surface-subtle: #252420;
+    --surface-hover: rgba(255, 255, 255, 0.04);
+    --shimmer-bg: #1c1b19;
+    --shimmer-shine: rgba(255, 255, 255, 0.04);
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.2);
   }
 
   * {
@@ -13,6 +43,7 @@
 
   body {
     @apply bg-background text-text-body font-sans antialiased;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   h1,
@@ -24,34 +55,15 @@
     @apply text-text-primary font-bold;
   }
 
-  /* Smooth scrolling */
   html {
     scroll-behavior: smooth;
   }
 }
 
 @layer utilities {
-  /* Text gradient utility for headings */
-  .text-gradient-aura {
-    @apply bg-gradient-aura bg-clip-text text-transparent;
-  }
-
-  /* Glow effect for interactive elements */
-  .glow-aura {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), 0 0 40px rgba(139, 92, 246, 0.2);
-  }
-
-  .glow-aura-hover {
-    transition: box-shadow 0.3s ease;
-  }
-
-  .glow-aura-hover:hover {
-    box-shadow: 0 0 30px rgba(59, 130, 246, 0.5), 0 0 60px rgba(139, 92, 246, 0.3);
-  }
-
-  /* Shimmer skeleton for loading states */
   .skeleton-shimmer {
-    @apply rounded-lg bg-background-elevated relative overflow-hidden;
+    @apply rounded-lg relative overflow-hidden;
+    background: var(--shimmer-bg);
   }
   .skeleton-shimmer::after {
     content: "";
@@ -60,20 +72,19 @@
     background: linear-gradient(
       90deg,
       transparent 0%,
-      rgba(255, 255, 255, 0.04) 50%,
+      var(--shimmer-shine) 50%,
       transparent 100%
     );
     background-size: 200% 100%;
     animation: shimmer 1.5s ease-in-out infinite;
   }
 
-  /* Input focus glow */
   .input-aura {
     @apply transition-all duration-200;
   }
   .input-aura:focus {
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
-    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(196, 133, 58, 0.3);
+    border-color: var(--accent-amber);
     outline: none;
   }
 }

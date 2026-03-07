@@ -10,7 +10,7 @@ import { cn } from "@/lib/cn"
 const planColors: Record<string, string> = {
   FREE: "bg-text-muted/10 text-text-muted",
   STARTER: "bg-accent-blue/10 text-accent-blue",
-  PROFESSIONAL: "bg-accent-violet/10 text-accent-violet",
+  PROFESSIONAL: "bg-accent-amber/10 text-accent-amber",
 }
 
 const planLabels: Record<string, string> = {
@@ -86,7 +86,7 @@ function TemplateCard({
       {/* Integrations */}
       <div className="flex flex-wrap gap-1 mb-4">
         {template.integrations.slice(0, 3).map((i) => (
-          <span key={i} className="text-xs bg-white/5 border border-border px-2 py-0.5 rounded-full text-text-muted">
+          <span key={i} className="text-xs bg-surface-subtle border border-border px-2 py-0.5 rounded-full text-text-muted">
             {i}
           </span>
         ))}

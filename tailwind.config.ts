@@ -6,33 +6,36 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
-        // Aura Brand Colors
+        // Aura — Warm Editorial palette (CSS variables for light/dark)
         background: {
-          DEFAULT: "#0A0B10", // Deep Charcoal
-          elevated: "#13151E", // Elevated/Cards
+          DEFAULT: "var(--bg)",
+          elevated: "var(--bg-elevated)",
         },
         border: {
-          DEFAULT: "#1F2937", // Subtle borders
+          DEFAULT: "var(--border)",
         },
         text: {
-          primary: "#FFFFFF", // Headlines
-          body: "#E5E7EB", // Body text
-          muted: "#9CA3AF", // Inactive/muted
+          primary: "var(--text-primary)",
+          body: "var(--text-body)",
+          muted: "var(--text-muted)",
         },
         accent: {
-          blue: "#3B82F6", // Electric Blue
-          violet: "#8B5CF6", // Vivid Violet
+          amber: "var(--accent-amber)",
+          blue: "var(--accent-blue)",
         },
-      },
-      backgroundImage: {
-        "gradient-aura": "linear-gradient(90deg, #3B82F6 0%, #8B5CF6 100%)",
-        "gradient-aura-hover": "linear-gradient(90deg, #60A5FA 0%, #A78BFA 100%)",
+        // Semantic surface colors for hardcoded values
+        surface: {
+          subtle: "var(--surface-subtle)",
+          hover: "var(--surface-hover)",
+        },
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        serif: ["var(--font-dm-serif)", "Georgia", "serif"],
       },
       letterSpacing: {
         tighter: "-0.02em",

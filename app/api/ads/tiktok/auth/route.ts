@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireAuth } from "@/lib/api-auth"
+import { createSignedState } from "@/lib/oauth-state"
 
 // GET: Redirect to TikTok Business OAuth
 export async function GET(req: NextRequest) {
@@ -14,7 +15,7 @@ export async function GET(req: NextRequest) {
   const origin = new URL(req.url).origin
   const redirectUri = `${origin}/api/ads/tiktok/callback`
 
-  const state = Buffer.from(JSON.stringify({ tenantId: user.id })).toString("base64url")
+  const state = createSignedState({ tenantId: user.id, ts: Date.now() })
 
   const authUrl =
     `https://business-api.tiktok.com/portal/auth?` +

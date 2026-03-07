@@ -193,7 +193,7 @@ function MediaConnectContent() {
 
                 {connected && connectedAccount ? (
                   <div className="space-y-3">
-                    <div className="p-3 rounded-lg bg-white/[0.03] border border-border/50">
+                    <div className="p-3 rounded-lg bg-black/[0.02] border border-border/50">
                       <p className="text-xs font-medium text-text-primary">{connectedAccount.account_name}</p>
                       <p className="text-xs text-text-muted mt-0.5">{connectedAccount.platform_account_id}</p>
                       {connectedAccount.last_synced_at && (
@@ -213,7 +213,7 @@ function MediaConnectContent() {
                   <button
                     onClick={() => handleConnect(platform.id)}
                     disabled={connecting === platform.id || loading}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-accent-blue hover:bg-accent-blue/90 text-white text-sm font-medium transition-colors disabled:opacity-50"
+                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-accent-amber hover:bg-accent-amber/90 text-white text-sm font-medium transition-colors disabled:opacity-50"
                   >
                     {connecting === platform.id ? (
                       <Loader2 className="w-4 h-4 animate-spin" />

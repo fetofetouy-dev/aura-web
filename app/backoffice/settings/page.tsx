@@ -30,7 +30,7 @@ function IntegrationCard({ icon: Icon, name, description, connected, loading, on
     <div className="bg-background-elevated border border-border rounded-xl p-5">
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-4">
-          <div className="w-10 h-10 rounded-xl bg-white/5 border border-border flex items-center justify-center shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-surface-subtle border border-border flex items-center justify-center shrink-0">
             <Icon className="w-5 h-5 text-text-muted" />
           </div>
           <div>
@@ -177,7 +177,7 @@ export default function SettingsPage() {
       <DemoTopBar title="Configuración" />
       <main className="flex-1 p-6 space-y-8 max-w-3xl">
         <div>
-          <h1 className="text-xl font-semibold text-text-primary">Configuración</h1>
+          <h1 className="font-serif text-2xl font-normal text-text-primary">Configuración</h1>
           <p className="text-sm text-text-muted mt-0.5">
             Conectá tu cuenta de Google para habilitar el envío automático de emails. Sin Gmail conectado, las automatizaciones no pueden enviar emails a tus clientes.
           </p>
@@ -190,7 +190,7 @@ export default function SettingsPage() {
               {user?.user_metadata?.avatar_url
                 // eslint-disable-next-line @next/next/no-img-element
                 ? <img src={user.user_metadata.avatar_url} alt="" className="w-12 h-12 rounded-full" />
-                : <div className="w-12 h-12 rounded-full bg-gradient-to-br from-accent-blue to-accent-violet flex items-center justify-center text-white font-bold text-lg">{name[0]?.toUpperCase() ?? "U"}</div>}
+                : <div className="w-12 h-12 rounded-full bg-accent-amber/20 flex items-center justify-center text-accent-amber font-bold text-lg">{name[0]?.toUpperCase() ?? "U"}</div>}
               <div>
                 <p className="font-semibold text-text-primary">{name}</p>
                 <p className="text-sm text-text-muted">{user?.email ?? "—"}</p>
@@ -289,7 +289,7 @@ export default function SettingsPage() {
           {/* Connection list */}
           {webhooksLoading ? (
             <div className="space-y-2">
-              {[...Array(2)].map((_, i) => <div key={i} className="h-24 rounded-xl bg-white/5 animate-pulse" />)}
+              {[...Array(2)].map((_, i) => <div key={i} className="h-24 rounded-xl bg-surface-subtle animate-pulse" />)}
             </div>
           ) : webhooks.length === 0 ? (
             <div className="text-center py-8 text-text-muted text-sm">
@@ -304,9 +304,9 @@ export default function SettingsPage() {
                   {/* Header */}
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <div className={cn("w-2.5 h-2.5 rounded-full", wh.is_active ? "bg-green-400" : "bg-white/20")} />
+                      <div className={cn("w-2.5 h-2.5 rounded-full", wh.is_active ? "bg-green-400" : "bg-border")} />
                       <p className="font-medium text-text-primary">{wh.name}</p>
-                      <span className={cn("text-[10px] font-medium px-2 py-0.5 rounded-full", wh.is_active ? "bg-green-400/10 text-green-400" : "bg-white/5 text-text-muted")}>
+                      <span className={cn("text-[10px] font-medium px-2 py-0.5 rounded-full", wh.is_active ? "bg-green-400/10 text-green-400" : "bg-surface-subtle text-text-muted")}>
                         {wh.is_active ? "Activa" : "Pausada"}
                       </span>
                     </div>

@@ -6,6 +6,7 @@ import { motion } from "framer-motion"
 import { Bell, ChevronDown, LogOut, Menu } from "lucide-react"
 import { createSupabaseBrowserClient } from "@/lib/supabase"
 import { useSidebar } from "./SidebarContext"
+import { ThemeToggle } from "./ThemeToggle"
 import type { User } from "@supabase/supabase-js"
 
 interface DemoTopBarProps {
@@ -44,7 +45,7 @@ export function DemoTopBar({ title, subtitle }: DemoTopBarProps) {
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={toggle}
-          className="p-2 rounded-lg hover:bg-white/5 transition-colors md:hidden"
+          className="p-2 rounded-lg hover:bg-surface-hover transition-colors md:hidden"
         >
           <Menu className="w-5 h-5 text-text-muted" />
         </motion.button>
@@ -56,22 +57,24 @@ export function DemoTopBar({ title, subtitle }: DemoTopBarProps) {
       </div>
 
       <div className="flex items-center gap-3">
+        <ThemeToggle />
+
         {/* Notifications */}
         <motion.button
           whileTap={{ scale: 0.9 }}
-          className="relative p-2 rounded-lg hover:bg-white/5 transition-colors"
+          className="relative p-2 rounded-lg hover:bg-surface-hover transition-colors"
         >
           <Bell className="w-4 h-4 text-text-muted" />
         </motion.button>
 
         {/* User */}
         <div className="flex items-center gap-2">
-          <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-colors">
+          <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-surface-hover transition-colors">
             {image ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={image} alt={name} className="w-7 h-7 rounded-full" />
             ) : (
-              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-accent-blue to-accent-violet flex items-center justify-center text-xs font-bold text-white">
+              <div className="w-7 h-7 rounded-full bg-accent-amber/20 flex items-center justify-center text-xs font-bold text-accent-amber">
                 {initial}
               </div>
             )}
@@ -84,7 +87,7 @@ export function DemoTopBar({ title, subtitle }: DemoTopBarProps) {
 
           <button
             onClick={handleSignOut}
-            className="p-2 rounded-lg hover:bg-white/5 transition-colors text-text-muted hover:text-red-400"
+            className="p-2 rounded-lg hover:bg-red-500/10 transition-colors text-text-muted hover:text-red-500"
             title="Cerrar sesión"
           >
             <LogOut className="w-4 h-4" />

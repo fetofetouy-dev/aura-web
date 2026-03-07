@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase-server"
 import { exchangeMetaCode, exchangeForLongLivedToken } from "@/lib/meta-ads-client"
+import { verifySignedState } from "@/lib/oauth-state"
 
 // GET: Handle Meta OAuth callback
 export async function GET(req: NextRequest) {
@@ -11,7 +12,7 @@ export async function GET(req: NextRequest) {
 
   if (errorParam) {
     return NextResponse.redirect(
-      new URL(`/backoffice/media/connect?meta=error&reason=${errorParam}`, req.url)
+      new URL("/backoffice/media/connect?meta=error&reason=auth_denied", req.url)
     )
   }
 
@@ -21,16 +22,14 @@ export async function GET(req: NextRequest) {
     )
   }
 
-  // Decode tenant_id from state
-  let tenantId: string
-  try {
-    const decoded = JSON.parse(Buffer.from(state, "base64url").toString())
-    tenantId = decoded.tenantId
-  } catch {
+  // Verify signed state and extract tenant_id
+  const decoded = verifySignedState(state)
+  if (!decoded || !decoded.tenantId || typeof decoded.tenantId !== "string") {
     return NextResponse.redirect(
       new URL("/backoffice/media/connect?meta=error&reason=invalid_state", req.url)
     )
   }
+  const tenantId = decoded.tenantId
 
   try {
     const origin = new URL(req.url).origin
@@ -52,7 +51,7 @@ export async function GET(req: NextRequest) {
           tenant_id: tenantId,
           provider: "meta_ads",
           access_token: accessToken,
-          refresh_token: null, // Meta long-lived tokens don't have refresh tokens
+          refresh_token: null,
           token_expires_at: expiresAt,
           is_active: true,
           updated_at: new Date().toISOString(),

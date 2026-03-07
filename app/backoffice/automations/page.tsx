@@ -39,7 +39,7 @@ const categoryColors: Record<string, string> = {
   APPOINTMENTS: "bg-green-500/10 text-green-400",
   BILLING: "bg-yellow-500/10 text-yellow-400",
   INVENTORY: "bg-orange-500/10 text-orange-400",
-  MARKETING: "bg-accent-violet/10 text-accent-violet",
+  MARKETING: "bg-accent-amber/10 text-accent-amber",
 }
 
 function formatRelativeTime(dateStr: string) {
@@ -102,7 +102,7 @@ export default function AutomationsPage() {
     <div className="flex-1 p-6 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-semibold text-text-primary">Automatizaciones</h1>
+        <h1 className="font-serif text-2xl font-normal text-text-primary">Automatizaciones</h1>
         <p className="text-sm text-text-muted mt-0.5">
           Tus automatizaciones activas que trabajan en segundo plano. Cada una se ejecuta automáticamente según su trigger (evento o cron) y envía emails a tus clientes vía Gmail.
         </p>
@@ -112,7 +112,7 @@ export default function AutomationsPage() {
       {loading && (
         <div className="space-y-3">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-20 rounded-xl bg-white/5 animate-pulse" />
+            <div key={i} className="h-20 rounded-xl bg-surface-subtle animate-pulse" />
           ))}
         </div>
       )}
@@ -140,7 +140,7 @@ export default function AutomationsPage() {
               {[
                 { label: "Total ejecuciones", value: stats.totalExecutions.toLocaleString(), icon: Zap, color: "text-accent-blue" },
                 { label: "Tasa de éxito global", value: `${stats.globalSuccessRate}%`, icon: CheckCircle2, color: "text-green-400" },
-                { label: "Automatizaciones activas", value: stats.activeCount, icon: Play, color: "text-accent-violet" },
+                { label: "Automatizaciones activas", value: stats.activeCount, icon: Play, color: "text-accent-amber" },
                 { label: "Con errores recientes", value: stats.withErrors, icon: AlertCircle, color: stats.withErrors > 0 ? "text-red-400" : "text-text-muted" },
               ].map((stat) => {
                 const Icon = stat.icon
@@ -181,7 +181,7 @@ export default function AutomationsPage() {
                       <p className="font-medium text-text-primary text-sm truncate">
                         {automation.name}
                       </p>
-                      <span className={cn("text-xs px-2 py-0.5 rounded-full font-medium shrink-0", categoryColors[automation.category] ?? "bg-white/5 text-text-muted")}>
+                      <span className={cn("text-xs px-2 py-0.5 rounded-full font-medium shrink-0", categoryColors[automation.category] ?? "bg-surface-subtle text-text-muted")}>
                         {categoryLabels[automation.category] ?? automation.category}
                       </span>
                     </div>
@@ -192,7 +192,7 @@ export default function AutomationsPage() {
                   {/* Integrations */}
                   <div className="hidden md:flex items-center gap-1 shrink-0">
                     {automation.integrations.map((integration) => (
-                      <span key={integration} className="text-xs bg-white/5 border border-border px-2 py-0.5 rounded-full text-text-muted">
+                      <span key={integration} className="text-xs bg-surface-subtle border border-border px-2 py-0.5 rounded-full text-text-muted">
                         {integration}
                       </span>
                     ))}

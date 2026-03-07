@@ -47,7 +47,7 @@ function StepItem({ step, isLast }: { step: ExecutionStep; isLast: boolean }) {
     SUCCESS: { icon: CheckCircle2, color: "text-green-400", bg: "bg-green-400/10", line: "bg-green-400/30" },
     FAILED: { icon: XCircle, color: "text-red-400", bg: "bg-red-400/10", line: "bg-red-400/30" },
     RUNNING: { icon: RefreshCw, color: "text-yellow-400", bg: "bg-yellow-400/10", line: "bg-yellow-400/30" },
-    PENDING: { icon: Clock, color: "text-text-muted", bg: "bg-white/5", line: "bg-border" },
+    PENDING: { icon: Clock, color: "text-text-muted", bg: "bg-surface-subtle", line: "bg-border" },
   }
 
   const config = statusConfig[step.status]
@@ -110,7 +110,7 @@ function ExecutionCard({ execution }: { execution: MockExecution }) {
     <div className="border border-border rounded-xl overflow-hidden">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center gap-4 p-4 bg-background-elevated hover:bg-white/[0.02] transition-colors text-left"
+        className="w-full flex items-center gap-4 p-4 bg-background-elevated hover:bg-surface-hover transition-colors text-left"
       >
         {/* Status */}
         <div>
@@ -244,7 +244,7 @@ export default function AutomationDetailPage({ params }: { params: { id: string 
                 {automation.integrations.map((i) => (
                   <span
                     key={i}
-                    className="text-xs bg-white/5 border border-border px-2 py-0.5 rounded-full text-text-muted"
+                    className="text-xs bg-surface-subtle border border-border px-2 py-0.5 rounded-full text-text-muted"
                   >
                     {i}
                   </span>
@@ -306,7 +306,7 @@ export default function AutomationDetailPage({ params }: { params: { id: string 
             </div>
             <span className="text-sm font-bold text-text-primary">{successRate}%</span>
           </div>
-          <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+          <div className="h-2 bg-surface-subtle rounded-full overflow-hidden">
             <div
               className={cn("h-full rounded-full transition-all duration-500", barColor)}
               style={{ width: `${successRate}%` }}

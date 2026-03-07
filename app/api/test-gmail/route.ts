@@ -3,6 +3,7 @@ import { supabaseAdmin } from "@/lib/supabase-server"
 import { requireAuth } from "@/lib/api-auth"
 import { refreshAccessToken, sendGmail } from "@/lib/google-client"
 import { testEmail } from "@/lib/email-templates"
+import { rateLimit } from "@/lib/rate-limit"
 
 /**
  * POST /api/test-gmail
@@ -11,6 +12,10 @@ import { testEmail } from "@/lib/email-templates"
 export async function POST() {
   const { user, error } = await requireAuth()
   if (error) return error
+
+  // Max 5 test emails per minute
+  const limited = rateLimit(`test-gmail:${user.id}`, 5, 60_000)
+  if (limited) return limited
 
   const { data: creds, error: dbError } = await supabaseAdmin
     .from("google_credentials")
@@ -27,7 +32,7 @@ export async function POST() {
     const { messageId } = await sendGmail(accessToken, testEmail(user.email!))
     return NextResponse.json({ success: true, messageId })
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error"
-    return NextResponse.json({ error: message }, { status: 500 })
+    console.error("test-gmail error:", err)
+    return NextResponse.json({ error: "Error al enviar email de prueba." }, { status: 500 })
   }
 }

@@ -129,7 +129,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
   }
 
   const inputClass = "w-full px-3 py-2.5 rounded-lg bg-background-elevated border border-border text-text-primary placeholder:text-text-muted text-sm focus:outline-none focus:border-accent-blue transition-colors"
-  const readClass = "w-full px-3 py-2.5 rounded-lg bg-white/[0.02] border border-transparent text-text-primary text-sm"
+  const readClass = "w-full px-3 py-2.5 rounded-lg bg-black/[0.02] border border-transparent text-text-primary text-sm"
 
   function getTimelineIcon(type: string) {
     const size = "w-3.5 h-3.5"
@@ -155,10 +155,10 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
       case "customer_created": return "bg-green-400/10 text-green-400"
       case "appointment_scheduled": case "appointment_completed": return "bg-accent-blue/10 text-accent-blue"
       case "appointment_noshow": return "bg-red-400/10 text-red-400"
-      case "email_sent": case "email_opened": case "email_clicked": return "bg-violet-400/10 text-violet-400"
+      case "email_sent": case "email_opened": case "email_clicked": return "bg-amber-400/10 text-amber-400"
       case "payment_received": return "bg-emerald-400/10 text-emerald-400"
       case "whatsapp_sent": case "whatsapp_replied": return "bg-green-400/10 text-green-400"
-      default: return "bg-white/5 text-text-muted"
+      default: return "bg-surface-subtle text-text-muted"
     }
   }
 
@@ -236,16 +236,16 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
         <div className="flex items-center gap-3">
           <Link
             href="/backoffice/customers"
-            className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-white/5 transition-colors"
+            className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-hover transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-blue/20 to-accent-violet/20 flex items-center justify-center text-sm font-semibold text-accent-blue shrink-0">
+            <div className="w-10 h-10 rounded-full bg-accent-amber/20 flex items-center justify-center text-sm font-semibold text-accent-amber shrink-0">
               {customer.name[0]?.toUpperCase()}
             </div>
             <div>
-              <h1 className="text-xl font-semibold text-text-primary">{customer.name}</h1>
+              <h1 className="font-serif text-2xl font-normal text-text-primary">{customer.name}</h1>
               <div className="flex items-center gap-2">
                 <p className="text-xs text-text-muted">
                   Creado el {new Date(customer.created_at).toLocaleDateString("es-AR", { day: "2-digit", month: "long", year: "numeric" })}
@@ -253,8 +253,8 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                 {customer.source && (
                   <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
                     customer.source === "csv" ? "bg-amber-400/10 text-amber-400" :
-                    customer.source?.startsWith("webhook:") ? "bg-violet-400/10 text-violet-400" :
-                    "bg-white/5 text-text-muted"
+                    customer.source?.startsWith("webhook:") ? "bg-amber-400/10 text-amber-400" :
+                    "bg-surface-subtle text-text-muted"
                   }`}>
                     {customer.source === "manual" ? "Manual" :
                      customer.source === "csv" ? "CSV" :
@@ -270,7 +270,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
           {!editing ? (
             <button
               onClick={() => setEditing(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-accent-blue hover:bg-accent-blue/90 text-white text-sm font-medium rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-accent-amber hover:bg-accent-amber/90 text-white text-sm font-medium rounded-lg transition-colors"
             >
               Editar
             </button>
@@ -294,7 +294,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
               <button
                 onClick={handleSave}
                 disabled={saving || !name.trim()}
-                className="flex items-center gap-2 px-4 py-2 bg-accent-blue hover:bg-accent-blue/90 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-accent-amber hover:bg-accent-amber/90 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
               >
                 {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
                 {saving ? "Guardando..." : "Guardar"}
@@ -468,7 +468,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                 <label className="text-xs font-medium text-text-muted mb-1 block capitalize">
                   {key.replace(/_/g, " ")}
                 </label>
-                <p className="px-3 py-2 rounded-lg bg-white/[0.02] text-text-primary text-sm">
+                <p className="px-3 py-2 rounded-lg bg-black/[0.02] text-text-primary text-sm">
                   {metadata[key] || <span className="text-text-muted">—</span>}
                 </p>
               </div>
@@ -485,7 +485,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
           </span>
         )}
         {customer.status && customer.status !== "active" && (
-          <span className="px-2.5 py-1 rounded-full bg-white/5 text-text-muted text-xs font-medium">
+          <span className="px-2.5 py-1 rounded-full bg-surface-subtle text-text-muted text-xs font-medium">
             {customer.status}
           </span>
         )}
@@ -499,7 +499,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
             Historial de actividad
           </h2>
           {timelineTotal > 0 && (
-            <span className="text-xs text-text-muted bg-white/5 px-2 py-0.5 rounded-full">
+            <span className="text-xs text-text-muted bg-surface-subtle px-2 py-0.5 rounded-full">
               {timelineTotal}
             </span>
           )}

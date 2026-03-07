@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase-server"
 import { requireAuth } from "@/lib/api-auth"
 import { inngest } from "@/lib/inngest"
+import { rateLimit } from "@/lib/rate-limit"
 import type { AuraField } from "@/lib/import/column-mapper"
+
+const MAX_IMPORT_ROWS = 10_000
 
 interface ImportRow {
   name?: string
@@ -22,9 +25,20 @@ export async function POST(req: NextRequest) {
   const { user, error } = await requireAuth()
   if (error) return error
 
+  // Max 5 imports per minute
+  const limited = rateLimit(`import:${user.id}`, 5, 60_000)
+  if (limited) return limited
+
   const body: ImportPayload = await req.json().catch(() => null)
   if (!body?.rows || !body?.mapping) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 })
+  }
+
+  if (body.rows.length > MAX_IMPORT_ROWS) {
+    return NextResponse.json(
+      { error: `Máximo ${MAX_IMPORT_ROWS.toLocaleString()} filas por importación.` },
+      { status: 400 }
+    )
   }
 
   // Collect CSV columns for metadata detection

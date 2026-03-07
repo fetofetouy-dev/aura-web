@@ -83,7 +83,7 @@ export default function AppointmentsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-text-primary">Citas</h1>
+          <h1 className="font-serif text-2xl font-normal text-text-primary">Citas</h1>
           <p className="text-sm text-text-muted mt-0.5">
             Gestioná las citas de tus clientes. Podés agendar, confirmar, completar o marcar como no-show. Las citas activan automatizaciones de recordatorio por email.
           </p>
@@ -93,7 +93,7 @@ export default function AppointmentsPage() {
         </div>
         <Link
           href="/backoffice/appointments/new"
-          className="flex items-center gap-2 px-4 py-2 bg-accent-blue hover:bg-accent-blue/90 text-white text-sm font-medium rounded-lg transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-accent-amber hover:bg-accent-amber/90 text-white text-sm font-medium rounded-lg transition-colors"
         >
           <Plus className="w-4 h-4" />
           Nueva cita
@@ -109,7 +109,7 @@ export default function AppointmentsPage() {
             className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
               filter === f
                 ? "bg-accent-blue/10 text-accent-blue"
-                : "text-text-muted hover:text-text-primary hover:bg-white/5"
+                : "text-text-muted hover:text-text-primary hover:bg-surface-hover"
             }`}
           >
             {f === "upcoming" ? "Próximas" : f === "past" ? "Pasadas" : "Todas"}
@@ -121,7 +121,7 @@ export default function AppointmentsPage() {
       {loading && (
         <div className="space-y-3">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-16 rounded-xl bg-white/5 animate-pulse" />
+            <div key={i} className="h-16 rounded-xl bg-surface-subtle animate-pulse" />
           ))}
         </div>
       )}
@@ -129,7 +129,7 @@ export default function AppointmentsPage() {
       {/* Empty state */}
       {!loading && appointments.length === 0 && page === 1 && (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-4">
+          <div className="w-12 h-12 rounded-full bg-surface-subtle flex items-center justify-center mb-4">
             <CalendarDays className="w-6 h-6 text-text-muted" />
           </div>
           <p className="text-text-primary font-medium mb-1">No hay citas</p>
@@ -138,7 +138,7 @@ export default function AppointmentsPage() {
           </p>
           <Link
             href="/backoffice/appointments/new"
-            className="flex items-center gap-2 px-4 py-2 bg-accent-blue text-white text-sm font-medium rounded-lg hover:bg-accent-blue/90 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-accent-amber text-white text-sm font-medium rounded-lg hover:bg-accent-amber/90 transition-colors"
           >
             <Plus className="w-4 h-4" />
             Agendar cita

@@ -2,6 +2,18 @@ import { createServerClient } from "@supabase/ssr"
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
+// API routes that don't require authentication (public endpoints)
+const PUBLIC_API_ROUTES = [
+  "/api/webhooks/",   // External webhook receivers
+  "/api/inngest",     // Inngest handler (uses its own signing key)
+  "/api/ads/meta/callback",
+  "/api/ads/tiktok/callback",
+]
+
+function isPublicApiRoute(pathname: string): boolean {
+  return PUBLIC_API_ROUTES.some((route) => pathname.startsWith(route))
+}
+
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
@@ -49,9 +61,14 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  // Block unauthenticated access to protected API routes (defense in depth).
+  if (!user && pathname.startsWith("/api/") && !isPublicApiRoute(pathname)) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 })
+  }
+
   return supabaseResponse
 }
 
 export const config = {
-  matcher: ["/", "/login", "/backoffice/:path*"],
+  matcher: ["/", "/login", "/backoffice/:path*", "/api/:path*"],
 }
