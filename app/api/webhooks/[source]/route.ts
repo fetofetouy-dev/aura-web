@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase-server"
 import { inngest } from "@/lib/inngest"
+import { rateLimit } from "@/lib/rate-limit"
+
+const MAX_PAYLOAD_SIZE = 1_000_000 // 1MB
+const EMAIL_REGEX = /^[^@\s]+@[^@\s]+\.[^@\s]+$/
 
 /**
  * Generic webhook receiver.
@@ -8,20 +12,27 @@ import { inngest } from "@/lib/inngest"
  *
  * URL format: /api/webhooks/[source]
  * Auth: x-aura-secret header (must match secret_key in webhook_endpoints table)
- *
- * Example: POST /api/webhooks/mercadopago
- *          x-aura-secret: <secret_key>
- *          body: { ...mercadopago payload }
  */
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ source: string }> }
 ) {
   const { source } = await params
+
+  // Rate limit per source (100 req/min)
+  const limited = rateLimit(`webhook:${source}`, 100, 60_000)
+  if (limited) return limited
+
   const secretKey = req.headers.get("x-aura-secret")
 
   if (!secretKey) {
     return NextResponse.json({ error: "Missing x-aura-secret header" }, { status: 401 })
+  }
+
+  // Reject oversized payloads
+  const contentLength = parseInt(req.headers.get("content-length") || "0", 10)
+  if (contentLength > MAX_PAYLOAD_SIZE) {
+    return NextResponse.json({ error: "Payload too large" }, { status: 413 })
   }
 
   // Look up the webhook endpoint config by secret key and source
@@ -46,28 +57,31 @@ export async function POST(
   }
 
   // Apply event mapping if configured (maps external fields to Aura fields)
-  // e.g. { "customerId": "data.buyer.id", "leadEmail": "data.buyer.email" }
   const mappedData: Record<string, unknown> = {}
   const mapping = endpoint.event_mapping as Record<string, string>
   for (const [auraField, externalPath] of Object.entries(mapping)) {
+    if (typeof externalPath !== "string") continue
     const value = externalPath.split(".").reduce<unknown>((obj, key) => {
       if (obj && typeof obj === "object") return (obj as Record<string, unknown>)[key]
       return undefined
     }, payload)
-    mappedData[auraField] = value
+    // Only allow string/number/boolean values, not objects
+    if (value !== null && value !== undefined && typeof value !== "object") {
+      mappedData[auraField] = String(value).slice(0, 1000)
+    }
   }
 
   // If mapping includes customer fields, upsert the customer
   const customerName = mappedData.leadName as string | undefined
   const customerEmail = mappedData.leadEmail as string | undefined
-  if (customerName && customerEmail) {
+  if (customerName && customerEmail && EMAIL_REGEX.test(customerEmail)) {
     await supabaseAdmin
       .from("customers")
       .upsert({
         tenant_id: endpoint.tenant_id,
-        name: customerName,
-        email: customerEmail.toLowerCase(),
-        phone: (mappedData.leadPhone as string) || null,
+        name: customerName.slice(0, 200),
+        email: customerEmail.toLowerCase().slice(0, 320),
+        phone: ((mappedData.leadPhone as string) || "").slice(0, 30) || null,
         source: `webhook:${source}`,
       }, { onConflict: "tenant_id,email", ignoreDuplicates: false })
   }

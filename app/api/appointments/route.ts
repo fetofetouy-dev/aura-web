@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
 
   const { data, error: dbError } = await query
 
-  if (dbError) return NextResponse.json({ error: dbError.message }, { status: 500 })
+  if (dbError) return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 })
   return NextResponse.json({ data, total: count ?? 0, page, limit })
 }
 
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
     .select("*, customer:customers(id, name, email, phone)")
     .single()
 
-  if (dbError) return NextResponse.json({ error: dbError.message }, { status: 500 })
+  if (dbError) return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 })
 
   // Log interaction
   await logInteraction({

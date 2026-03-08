@@ -14,9 +14,15 @@ export async function PATCH(
   const { is_active, name, event_mapping } = body
 
   const update: Record<string, unknown> = {}
-  if (is_active !== undefined) update.is_active = is_active
-  if (name !== undefined) update.name = name
-  if (event_mapping !== undefined) update.event_mapping = event_mapping
+  if (is_active !== undefined) update.is_active = Boolean(is_active)
+  if (name !== undefined) update.name = String(name).trim().slice(0, 200)
+  if (event_mapping !== undefined && typeof event_mapping === "object" && event_mapping !== null && !Array.isArray(event_mapping)) {
+    // Validate all values in event_mapping are strings (dot-path expressions)
+    const safe = Object.fromEntries(
+      Object.entries(event_mapping).filter(([, v]) => typeof v === "string").map(([k, v]) => [k, String(v).slice(0, 200)])
+    )
+    update.event_mapping = safe
+  }
 
   if (Object.keys(update).length === 0) {
     return NextResponse.json({ error: "No hay campos para actualizar" }, { status: 400 })
@@ -48,6 +54,6 @@ export async function DELETE(
     .eq("id", id)
     .eq("tenant_id", user.id)
 
-  if (dbError) return NextResponse.json({ error: dbError.message }, { status: 500 })
+  if (dbError) return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 })
   return NextResponse.json({ success: true })
 }

@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
     .order("created_at", { ascending: false })
     .range(offset, offset + limit - 1)
 
-  if (dbError) return NextResponse.json({ error: dbError.message }, { status: 500 })
+  if (dbError) return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 })
   return NextResponse.json({ data, total: count ?? 0, page, limit })
 }
 
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     .select()
     .single()
 
-  if (dbError) return NextResponse.json({ error: dbError.message }, { status: 500 })
+  if (dbError) return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 })
 
   // Log the customer_created interaction
   await logInteraction({

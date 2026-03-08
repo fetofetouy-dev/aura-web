@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
   const { data: campaigns, error: dbError } = await query.order("name")
 
   if (dbError) {
-    return NextResponse.json({ error: dbError.message }, { status: 500 })
+    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 })
   }
 
   if (!campaigns || campaigns.length === 0) {

@@ -39,7 +39,9 @@ export async function PATCH(
   if (company !== undefined) update.company = company?.trim() || null
   if (notes !== undefined) update.notes = notes?.trim() || null
   if (birthday !== undefined) update.birthday = birthday || null
-  if (metadata !== undefined) update.metadata = metadata
+  if (metadata !== undefined && typeof metadata === "object" && metadata !== null && !Array.isArray(metadata)) {
+    update.metadata = metadata
+  }
 
   if (Object.keys(update).length === 0) {
     return NextResponse.json({ error: "No hay campos para actualizar" }, { status: 400 })
@@ -58,7 +60,7 @@ export async function PATCH(
     .select("*")
     .single()
 
-  if (dbError || !data) return NextResponse.json({ error: dbError?.message ?? "Cliente no encontrado" }, { status: 500 })
+  if (dbError || !data) return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 })
   return NextResponse.json(data)
 }
 
@@ -76,6 +78,6 @@ export async function DELETE(
     .eq("id", id)
     .eq("tenant_id", user.id)
 
-  if (dbError) return NextResponse.json({ error: dbError.message }, { status: 500 })
+  if (dbError) return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 })
   return NextResponse.json({ success: true })
 }

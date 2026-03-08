@@ -35,7 +35,7 @@ export async function GET(
     .range(offset, offset + limit - 1)
 
   if (dbError) {
-    return NextResponse.json({ error: dbError.message }, { status: 500 })
+    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 })
   }
 
   return NextResponse.json({

@@ -59,10 +59,15 @@ export async function sendGmail(
 ): Promise<{ messageId: string }> {
   const from = fromName ?? "Aura Automations"
 
+  // Sanitize headers to prevent email header injection
+  const safeTo = to.replace(/[\r\n]/g, "")
+  const safeSubject = subject.replace(/[\r\n]/g, "")
+  const safeFrom = from.replace(/[\r\n]/g, "")
+
   const rawEmail = [
-    `From: ${from} <me>`,
-    `To: ${to}`,
-    `Subject: ${subject}`,
+    `From: ${safeFrom} <me>`,
+    `To: ${safeTo}`,
+    `Subject: ${safeSubject}`,
     `MIME-Version: 1.0`,
     `Content-Type: text/html; charset=utf-8`,
     ``,

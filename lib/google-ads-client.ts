@@ -161,6 +161,12 @@ export async function getCampaignDailyStats(
 ): Promise<GoogleAdsDailyStats[]> {
   const cleanId = customerId.replace(/-/g, "")
 
+  // Validate date format to prevent GAQL injection
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/
+  if (!dateRegex.test(dateFrom) || !dateRegex.test(dateTo)) {
+    throw new Error("Invalid date format — expected YYYY-MM-DD")
+  }
+
   const query = `
     SELECT
       campaign.id,

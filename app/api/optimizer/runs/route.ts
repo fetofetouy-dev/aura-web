@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { requireAuth } from "@/lib/api-auth"
 import { supabaseAdmin } from "@/lib/supabase-server"
 import { inngest } from "@/lib/inngest"
+import { rateLimit } from "@/lib/rate-limit"
 
 // GET: List optimization runs with their solutions
 export async function GET() {
@@ -16,7 +17,7 @@ export async function GET() {
     .limit(20)
 
   if (dbError) {
-    return NextResponse.json({ error: dbError.message }, { status: 500 })
+    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 })
   }
 
   return NextResponse.json({ runs: runs ?? [] })
@@ -26,6 +27,9 @@ export async function GET() {
 export async function POST(request: Request) {
   const { user, error } = await requireAuth()
   if (error) return error
+
+  const limited = rateLimit(`optimizer-run:${user.id}`, 3, 120_000)
+  if (limited) return limited
 
   const body = await request.json().catch(() => ({}))
 

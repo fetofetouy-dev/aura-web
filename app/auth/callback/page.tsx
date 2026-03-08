@@ -10,8 +10,9 @@ export default function AuthCallbackPage() {
     const url = new URL(window.location.href)
     const code = url.searchParams.get("code")
     const rawNext = url.searchParams.get("next") ?? "/backoffice/dashboard"
+    // Strict: only allow relative paths under /backoffice to prevent open redirects
     const next =
-      rawNext.startsWith("/") && !rawNext.startsWith("//")
+      rawNext.startsWith("/backoffice")
         ? rawNext
         : "/backoffice/dashboard"
 

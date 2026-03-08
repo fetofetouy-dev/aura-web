@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { requireAuth } from "@/lib/api-auth"
 import { supabaseAdmin } from "@/lib/supabase-server"
+import { rateLimit } from "@/lib/rate-limit"
 
 const OPTIMIZER_URL = process.env.OPTIMIZER_SERVICE_URL || "http://localhost:8000"
 
@@ -8,6 +9,9 @@ const OPTIMIZER_URL = process.env.OPTIMIZER_SERVICE_URL || "http://localhost:800
 export async function POST(request: Request) {
   const { user, error } = await requireAuth()
   if (error) return error
+
+  const limited = rateLimit(`optimizer-analyze:${user.id}`, 3, 120_000)
+  if (limited) return limited
 
   const body = await request.json().catch(() => ({}))
 

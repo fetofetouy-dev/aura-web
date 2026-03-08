@@ -26,7 +26,9 @@ function TopBar() {
 
   const name = user?.user_metadata?.full_name ?? user?.email?.split("@")[0] ?? "Usuario"
   const initial = name[0]?.toUpperCase() ?? "U"
-  const image = user?.user_metadata?.avatar_url
+  const rawAvatar = user?.user_metadata?.avatar_url
+  // Only allow valid HTTP(S) URLs to prevent javascript: or data: injection
+  const image = rawAvatar && /^https?:\/\//.test(rawAvatar) ? rawAvatar : null
 
   async function handleSignOut() {
     const supabase = createSupabaseBrowserClient()
@@ -60,7 +62,7 @@ function TopBar() {
           <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-surface-hover transition-colors">
             {image ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={image} alt={name} className="w-7 h-7 rounded-full" />
+              <img src={image} alt={name} className="w-7 h-7 rounded-full" referrerPolicy="no-referrer" />
             ) : (
               <div className="w-7 h-7 rounded-full bg-accent-amber/20 flex items-center justify-center text-xs font-bold text-accent-amber">
                 {initial}

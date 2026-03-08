@@ -14,7 +14,7 @@ export async function GET() {
     .order("created_at", { ascending: false })
 
   if (dbError) {
-    return NextResponse.json({ error: dbError.message }, { status: 500 })
+    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 })
   }
 
   return NextResponse.json({ accounts: data ?? [] })
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (dbError) {
-    return NextResponse.json({ error: dbError.message }, { status: 500 })
+    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 })
   }
 
   return NextResponse.json({ account: data }, { status: 201 })
@@ -79,7 +79,7 @@ export async function DELETE(req: NextRequest) {
     .eq("tenant_id", user.id)
 
   if (dbError) {
-    return NextResponse.json({ error: dbError.message }, { status: 500 })
+    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 })
   }
 
   return NextResponse.json({ ok: true })

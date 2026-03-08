@@ -3,6 +3,7 @@ import { Inngest } from "inngest"
 export const inngest = new Inngest({
   id: "aura",
   name: "Aura Automations",
+  signingKey: process.env.INNGEST_SIGNING_KEY,
 })
 
 // Typed event definitions
